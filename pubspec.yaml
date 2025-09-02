@@ -1,0 +1,31 @@
+name: donor_dashboard
+description: "A modern mobile application that turns the blood donation process in Ukraine into an exciting game."
+publish_to: 'none' 
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  
+  # Для іконок
+  cupertino_icons: ^1.0.2
+  
+  # Для легкого використання кастомних шрифтів
+  google_fonts: ^6.1.0
+
+  # ДОДАЙТЕ ЦЕЙ РЯДОК
+  intl: ^0.18.1 # Або новіша версія
+  google_maps_flutter: ^2.5.3
+  flutter_map: ^6.1.0
+  latlong2: ^0.9.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
