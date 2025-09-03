@@ -1,10 +1,21 @@
 import 'package:donor_dashboard/app.dart';
+import 'package:donor_dashboard/data/models/app_user_model.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/date_symbol_data_local.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-Future<void> main() async {
+void main() async {
+  // Переконайтеся, що Flutter ініціалізовано
   WidgetsFlutterBinding.ensureInitialized();
-  await initializeDateFormatting('uk_UA', null);
 
-  runApp(const DonorDashboardApp());
+  // Ініціалізуємо Hive у піддиректорії додатку
+  await Hive.initFlutter();
+
+  // Реєструємо адаптер для нашої моделі
+  Hive.registerAdapter(AppUserAdapter());
+
+  // Відкриваємо "коробку" для зберігання користувачів
+  await Hive.openBox<AppUser>('users');
+
+  // Запускаємо додаток
+  runApp(const App());
 }
