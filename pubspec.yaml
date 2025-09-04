@@ -23,6 +23,9 @@ dependencies:
   latlong2: ^0.9.1
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  firebase_core: ^2.15.1 # Завжди потрібен для Firebase
+  firebase_auth: ^4.9.0 # Для автентифікації
+  cloud_firestore: ^4.9.1 # Для бази даних Firestore
 
 dev_dependencies:
   flutter_test:

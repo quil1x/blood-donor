@@ -1,43 +1,78 @@
 import 'package:donor_dashboard/data/models/blood_center_model.dart';
 import 'package:donor_dashboard/data/models/donation_model.dart';
+// --- ВИПРАВЛЕНО: Правильний шлях до файлу ---
 import 'package:donor_dashboard/data/models/quest_model.dart';
+// --- КІНЕЦЬ ---
 import 'package:donor_dashboard/data/models/reward_model.dart';
-import 'package:donor_dashboard/data/models/user_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-var mockUser = UserModel(
-  name: "Олена Петренко",
-  rank: "Почесний донор",
-  avatarUrl: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-  totalDonations: 12,
-  livesSaved: 36,
-  totalPoints: 4500,
-);
-
+// Список квестів, розширений та збалансований
 var mockQuests = [
+  // Початкові квести
   QuestModel(
+    id: "first_donation",
     title: "Перша донація",
-    description: "Здайте кров уперше",
+    description: "Зареєструйте свою першу донацію в профілі",
     rewardPoints: 500,
-    progress: 1.0,
     icon: CupertinoIcons.drop_fill,
   ),
   QuestModel(
+    id: "visit_blood_center",
+    title: "Розвідник",
+    description: "Заплануйте візит до будь-якого центру крові",
+    rewardPoints: 150,
+    icon: CupertinoIcons.map_pin_ellipse,
+  ),
+  QuestModel(
+    id: "invite_friend",
     title: "Запроси друга",
     description: "Запросіть друга стати донором",
     rewardPoints: 300,
-    progress: 0.5,
     icon: CupertinoIcons.person_2_fill,
   ),
+
+  // Квести на кількість донацій
   QuestModel(
-    title: "Донор-спринтер",
-    description: "Здайте кров 3 рази за рік",
+    id: "donor_adept",
+    title: "Адепт донорства",
+    description: "Зробіть 3 донації",
     rewardPoints: 1000,
-    progress: 0.66,
     icon: CupertinoIcons.flame_fill,
   ),
+  QuestModel(
+    id: "donor_expert",
+    title: "Експерт донорства",
+    description: "Зробіть 5 донацій",
+    rewardPoints: 1500,
+    icon: CupertinoIcons.star_fill,
+  ),
+  QuestModel(
+    id: "donor_master",
+    title: "Майстер донорства",
+    description: "Зробіть 10 донацій",
+    rewardPoints: 3000,
+    icon: CupertinoIcons.shield_fill,
+  ),
+
+  // Соціальні та освітні квести
+  QuestModel(
+    id: "share_achievement",
+    title: "Приклад для наслідування",
+    description: "Поділіться своїм досягненням у соцмережах",
+    rewardPoints: 200,
+    icon: CupertinoIcons.share_up,
+  ),
+  QuestModel(
+    id: "read_article",
+    title: "Допитливий розум",
+    description: "Прочитайте статтю про користь донорства",
+    rewardPoints: 100,
+    icon: CupertinoIcons.book_fill,
+  ),
 ];
+
+// --- Решта мок-даних без змін ---
 
 final mockBloodCenters = [
   BloodCenterModel(
@@ -85,7 +120,7 @@ final mockRewards = [
     cost: 5000,
     icon: Icons.fitness_center,
   ),
-   RewardModel(
+  RewardModel(
     title: "Чашка кави",
     description: "Безкоштовна кава у партнера",
     cost: 500,
@@ -94,21 +129,10 @@ final mockRewards = [
 ];
 
 final mockDonationHistory = [
-  DonationModel(date: DateTime(2025, 5, 20), location: "Київський міський центр крові"),
-  DonationModel(date: DateTime(2025, 2, 15), location: "Київський міський центр крові"),
-  DonationModel(date: DateTime(2024, 11, 10), location: "Львівський обласний центр"),
+  DonationModel(
+      date: DateTime(2025, 5, 20), location: "Київський міський центр крові"),
+  DonationModel(
+      date: DateTime(2025, 2, 15), location: "Київський міський центр крові"),
+  DonationModel(
+      date: DateTime(2024, 11, 10), location: "Львівський обласний центр"),
 ];
-
-void completeQuestAndUpdatePoints(QuestModel quest) {
-  if (quest.progress < 1.0) {
-    quest.progress = 1.0;
-    mockUser = UserModel(
-      name: mockUser.name,
-      rank: mockUser.rank,
-      avatarUrl: mockUser.avatarUrl,
-      totalDonations: mockUser.totalDonations,
-      livesSaved: mockUser.livesSaved,
-      totalPoints: mockUser.totalPoints + quest.rewardPoints,
-    );
-  }
-}

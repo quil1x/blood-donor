@@ -20,7 +20,6 @@ class RewardCard extends StatelessWidget {
           children: [
             Icon(reward.icon, size: 48, color: theme.primaryColor),
             const SizedBox(height: 16),
-            
             Text(
               reward.title,
               style: theme.textTheme.titleLarge?.copyWith(fontSize: 16),
@@ -29,7 +28,6 @@ class RewardCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 8),
-
             Text(
               reward.description,
               style: theme.textTheme.bodyMedium?.copyWith(fontSize: 12),
@@ -37,11 +35,10 @@ class RewardCard extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            
             const Spacer(),
-            
             Chip(
-              avatar: Icon(CupertinoIcons.star_fill, size: 16, color: theme.primaryColor),
+              avatar: Icon(CupertinoIcons.star_fill,
+                  size: 16, color: theme.primaryColor),
               label: Text(
                 '${reward.cost} XP',
                 style: theme.textTheme.bodyMedium?.copyWith(
@@ -49,7 +46,7 @@ class RewardCard extends StatelessWidget {
                   color: theme.primaryColor,
                 ),
               ),
-              backgroundColor: theme.primaryColor.withOpacity(0.1),
+              backgroundColor: theme.primaryColor.withAlpha(25), // ВИПРАВЛЕНО
               side: BorderSide.none,
             ),
           ],

@@ -4,18 +4,19 @@ import 'package:flutter/material.dart';
 
 class ChallengeCard extends StatelessWidget {
   final QuestModel quest;
+  final bool isCompleted;
   final VoidCallback? onComplete;
 
   const ChallengeCard({
     super.key,
     required this.quest,
+    required this.isCompleted,
     this.onComplete,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isCompleted = quest.progress >= 1.0;
 
     return Card(
       child: Padding(
@@ -56,7 +57,7 @@ class ChallengeCard extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: LinearProgressIndicator(
-                value: quest.progress,
+                value: isCompleted ? 1.0 : 0.0,
                 minHeight: 8,
                 backgroundColor: theme.scaffoldBackgroundColor,
                 valueColor: AlwaysStoppedAnimation<Color>(

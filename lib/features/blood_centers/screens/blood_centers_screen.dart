@@ -3,9 +3,39 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:donor_dashboard/features/auth/services/auth_service.dart';
+import 'package:donor_dashboard/core/theme/app_colors.dart';
 
 class BloodCentersScreen extends StatelessWidget {
-  const BloodCentersScreen({super.key});
+  final VoidCallback onUpdate;
+  const BloodCentersScreen({super.key, required this.onUpdate});
+
+  void _completeVisitQuest(BuildContext context) {
+    final authService = AuthService();
+    final currentUser = authService.getCurrentUser();
+    const questId = "visit_blood_center";
+
+    if (currentUser != null &&
+        !currentUser.completedQuests.containsKey(questId)) {
+      currentUser.completedQuests[questId] = DateTime.now();
+      currentUser.totalPoints += 150;
+      authService.updateUser(currentUser);
+      onUpdate();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Квест "Розвідник" виконано! +150 XP'),
+          backgroundColor: AppColors.greenAccent,
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Ви вже виконували цей квест.'),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,25 +81,34 @@ class BloodCentersScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final center = mockBloodCenters[index];
                 return Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(center.name, style: Theme.of(context).textTheme.titleLarge),
+                        Text(center.name,
+                            style: Theme.of(context).textTheme.titleLarge),
                         const SizedBox(height: 8),
-                        InfoRow(icon: CupertinoIcons.placemark_fill, text: center.address),
+                        InfoRow(
+                            icon: CupertinoIcons.placemark_fill,
+                            text: center.address),
                         const SizedBox(height: 4),
-                        InfoRow(icon: CupertinoIcons.clock_fill, text: center.workingHours),
+                        InfoRow(
+                            icon: CupertinoIcons.clock_fill,
+                            text: center.workingHours),
                         const SizedBox(height: 4),
-                        InfoRow(icon: CupertinoIcons.phone_fill, text: center.phone),
+                        InfoRow(
+                            icon: CupertinoIcons.phone_fill,
+                            text: center.phone),
                         const SizedBox(height: 16),
                         Align(
                           alignment: Alignment.centerRight,
                           child: ElevatedButton.icon(
-                            onPressed: () {},
-                            icon: const Icon(CupertinoIcons.calendar_badge_plus, size: 20),
+                            onPressed: () => _completeVisitQuest(context),
+                            icon: const Icon(CupertinoIcons.calendar_badge_plus,
+                                size: 20),
                             label: const Text('Запланувати візит'),
                           ),
                         )
@@ -96,9 +135,11 @@ class InfoRow extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, size: 16, color: Theme.of(context).textTheme.bodyMedium?.color),
+        Icon(icon,
+            size: 16, color: Theme.of(context).textTheme.bodyMedium?.color),
         const SizedBox(width: 8),
-        Expanded(child: Text(text, style: Theme.of(context).textTheme.bodyMedium)),
+        Expanded(
+            child: Text(text, style: Theme.of(context).textTheme.bodyMedium)),
       ],
     );
   }

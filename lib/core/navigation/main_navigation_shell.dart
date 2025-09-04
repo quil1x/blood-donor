@@ -16,13 +16,31 @@ class MainNavigationShell extends StatefulWidget {
 class _MainNavigationShellState extends State<MainNavigationShell> {
   int _selectedIndex = 0;
 
-  final List<Widget> _screens = [
-    const DashboardScreen(),
-    const BloodCentersScreen(),
-    const QuestsScreen(),
-    const RewardsStoreScreen(),
-    const ProfileScreen(),
-  ];
+  // Створюємо список віджетів всередині initState, щоб передати реальний метод.
+  late final List<Widget> _screens;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Цей метод буде викликатися з дочірніх екранів для оновлення стану
+    void refreshData() {
+      setState(() {
+        // Пустий setState змусить цей віджет і всі дочірні екрани
+        // завантажити свіжі дані з сервісів (наприклад, AuthService).
+      });
+    }
+
+    // ✅ ОСНОВНЕ ВИПРАВЛЕННЯ:
+    // Тепер `onUpdate` передається до ВСІХ екранів, які його потребують.
+    _screens = [
+      DashboardScreen(onUpdate: refreshData),
+      BloodCentersScreen(onUpdate: refreshData), // <-- Додано
+      QuestsScreen(onUpdate: refreshData),
+      RewardsStoreScreen(onUpdate: refreshData), // <-- Додано
+      ProfileScreen(onUpdate: refreshData),
+    ];
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -35,6 +53,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
     final width = MediaQuery.of(context).size.width;
     const breakpoint = 600;
 
+    // Код для мобільних пристроїв
     if (width < breakpoint) {
       return Scaffold(
         body: IndexedStack(
@@ -45,15 +64,22 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
           items: const [
-            BottomNavigationBarItem(icon: Icon(CupertinoIcons.home), label: 'Дашборд'),
-            BottomNavigationBarItem(icon: Icon(CupertinoIcons.placemark), label: 'Центри'),
-            BottomNavigationBarItem(icon: Icon(CupertinoIcons.flame), label: 'Квести'),
-            BottomNavigationBarItem(icon: Icon(CupertinoIcons.gift), label: 'Бонуси'),
-            BottomNavigationBarItem(icon: Icon(CupertinoIcons.person), label: 'Профіль'),
+            BottomNavigationBarItem(
+                icon: Icon(CupertinoIcons.home), label: 'Дашборд'),
+            BottomNavigationBarItem(
+                icon: Icon(CupertinoIcons.placemark), label: 'Центри'),
+            BottomNavigationBarItem(
+                icon: Icon(CupertinoIcons.flame), label: 'Квести'),
+            BottomNavigationBarItem(
+                icon: Icon(CupertinoIcons.gift), label: 'Бонуси'),
+            BottomNavigationBarItem(
+                icon: Icon(CupertinoIcons.person), label: 'Профіль'),
           ],
         ),
       );
-    } else {
+    }
+    // Код для планшетів та вебу
+    else {
       return Scaffold(
         body: Row(
           children: [
@@ -62,11 +88,17 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
               onDestinationSelected: _onItemTapped,
               labelType: NavigationRailLabelType.all,
               destinations: const [
-                NavigationRailDestination(icon: Icon(CupertinoIcons.home), label: Text('Дашборд')),
-                NavigationRailDestination(icon: Icon(CupertinoIcons.placemark), label: Text('Центри')),
-                NavigationRailDestination(icon: Icon(CupertinoIcons.flame), label: Text('Квести')),
-                NavigationRailDestination(icon: Icon(CupertinoIcons.gift), label: Text('Бонуси')),
-                NavigationRailDestination(icon: Icon(CupertinoIcons.person), label: Text('Профіль')),
+                NavigationRailDestination(
+                    icon: Icon(CupertinoIcons.home), label: Text('Дашборд')),
+                NavigationRailDestination(
+                    icon: Icon(CupertinoIcons.placemark),
+                    label: Text('Центри')),
+                NavigationRailDestination(
+                    icon: Icon(CupertinoIcons.flame), label: Text('Квести')),
+                NavigationRailDestination(
+                    icon: Icon(CupertinoIcons.gift), label: Text('Бонуси')),
+                NavigationRailDestination(
+                    icon: Icon(CupertinoIcons.person), label: Text('Профіль')),
               ],
             ),
             const VerticalDivider(thickness: 1, width: 1),
