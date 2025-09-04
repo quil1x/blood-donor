@@ -1,11 +1,11 @@
+// lib/features/rewards_store/screens/rewards_store_screen.dart
+
 import 'package:donor_dashboard/core/widgets/reward_card.dart';
 import 'package:donor_dashboard/data/mock_data.dart';
-import 'package:donor_dashboard/data/models/reward_model.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:donor_dashboard/features/auth/services/auth_service.dart';
+import 'package:donor_dashboard/features/auth/services/database_service.dart';
+import 'package:flutter/material.dart';
 import 'package:donor_dashboard/data/models/app_user_model.dart';
-import 'package:donor_dashboard/core/theme/app_colors.dart';
 
 class RewardsStoreScreen extends StatefulWidget {
   final VoidCallback onUpdate;
@@ -16,92 +16,53 @@ class RewardsStoreScreen extends StatefulWidget {
 }
 
 class _RewardsStoreScreenState extends State<RewardsStoreScreen> {
-  AppUser? currentUser;
+  final AuthService _authService = AuthService();
+  final DatabaseService _databaseService = DatabaseService();
 
-  @override
-  void initState() {
-    super.initState();
-    _loadUserData();
-  }
-
-  void _loadUserData() {
-    setState(() {
-      currentUser = AuthService().getCurrentUser();
-    });
-  }
-
-  void _buyReward(RewardModel reward) {
-    if (currentUser == null) return;
-
-    if (currentUser!.totalPoints >= reward.cost) {
-      setState(() {
-        currentUser!.totalPoints -= reward.cost;
-        currentUser!.save();
-        widget.onUpdate();
-      });
+  void _handlePurchase(int cost, AppUser currentUser) {
+    if (currentUser.totalPoints >= cost) {
+      currentUser.totalPoints -= cost;
+      _databaseService.updateUserProfile(currentUser);
+      widget.onUpdate();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Винагороду "${reward.title}" придбано!'),
-          backgroundColor: AppColors.greenAccent,
-        ),
+        const SnackBar(
+            content: Text('Покупка успішна!'), backgroundColor: Colors.green),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Недостатньо балів для покупки!'),
-          backgroundColor: Colors.redAccent,
-        ),
+            content: Text('Недостатньо балів!'), backgroundColor: Colors.red),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (currentUser == null) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Магазин винагород'),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: Chip(
-              side: BorderSide.none,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              avatar: Icon(CupertinoIcons.star_fill,
-                  color: Theme.of(context).primaryColor),
-              label: Text(
-                '${currentUser!.totalPoints}',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).textTheme.bodyLarge?.color,
-                ),
-              ),
+      appBar: AppBar(title: const Text('Магазин бонусів')),
+      body: ValueListenableBuilder<AppUser?>(
+        valueListenable: _authService.currentUserNotifier,
+        builder: (context, currentUser, child) {
+          if (currentUser == null) {
+            return const Center(child: Text("Помилка завантаження даних."));
+          }
+          return GridView.builder(
+            padding: const EdgeInsets.all(16.0),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
+              childAspectRatio: 0.8,
             ),
-          )
-        ],
-      ),
-      body: GridView.builder(
-        padding: const EdgeInsets.all(24.0),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2, // Змінено для кращого вигляду на мобільному
-          crossAxisSpacing: 20,
-          mainAxisSpacing: 20,
-          childAspectRatio: 0.9,
-        ),
-        itemCount: mockRewards.length,
-        itemBuilder: (context, index) {
-          final reward = mockRewards[index];
-          final canAfford = currentUser!.totalPoints >= reward.cost;
-          return Opacity(
-            opacity: canAfford ? 1.0 : 0.5,
-            child: InkWell(
-              onTap: canAfford ? () => _buyReward(reward) : null,
-              borderRadius: BorderRadius.circular(12),
-              child: RewardCard(reward: reward),
-            ),
+            itemCount: mockRewards.length,
+            itemBuilder: (context, index) {
+              final reward = mockRewards[index];
+              return RewardCard(
+                reward: reward,
+                userPoints: currentUser.totalPoints,
+                onPurchase: () => _handlePurchase(reward.cost, currentUser),
+              );
+            },
           );
         },
       ),

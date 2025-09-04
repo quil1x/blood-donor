@@ -1,66 +1,83 @@
+import 'package:donor_dashboard/data/models/app_user_model.dart';
+import 'package:donor_dashboard/features/auth/services/database_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import '../../../data/models/app_user_model.dart';
 
 class AuthService {
+  // --- Створюємо єдиний екземпляр сервісу (синглтон) ---
   static final AuthService _instance = AuthService._internal();
-  factory AuthService() => _instance;
-  AuthService._internal();
 
-  late final Box<String> _sessionBox;
-  late final Box<AppUser> _usersBox;
-
-  // --- ДОДАНО: Центральний слухач змін ---
-  // Цей об'єкт буде зберігати поточного користувача і сповіщати всіх, хто на нього підписаний.
-  final ValueNotifier<AppUser?> currentUserNotifier = ValueNotifier(null);
-
-  Future<void> init() async {
-    _sessionBox = await Hive.openBox<String>('session');
-    _usersBox = Hive.box<AppUser>('users');
-    _loadCurrentUser();
+  // Фабричний конструктор, який завжди повертає той самий екземпляр
+  factory AuthService() {
+    return _instance;
   }
 
-  // Завантажує користувача з Hive і оновлює слухач
-  void _loadCurrentUser() {
-    final email = _sessionBox.get('currentUserEmail');
-    if (email != null) {
-      final user = _usersBox.get(email);
-      currentUserNotifier.value = user;
-    } else {
-      currentUserNotifier.value = null;
+  // Приватний конструктор
+  AuthService._internal();
+  // ---------------------------------------------------------
+
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final DatabaseService _databaseService = DatabaseService();
+  final ValueNotifier<AppUser?> currentUserNotifier = ValueNotifier(null);
+
+  // Цей метод викликається один раз при старті застосунку
+  void init() {
+    _firebaseAuth.authStateChanges().listen((firebaseUser) async {
+      if (firebaseUser != null) {
+        // Користувач залогінений, завантажуємо його профіль
+        final userProfile =
+            await _databaseService.getUserProfile(firebaseUser.uid);
+        currentUserNotifier.value = userProfile;
+      } else {
+        // Користувач вийшов з системи
+        currentUserNotifier.value = null;
+      }
+    });
+  }
+
+  // Решта методів залишається без змін...
+  Future<String?> register(
+      {required String name,
+      required String email,
+      required String password}) async {
+    try {
+      final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      final firebaseUser = userCredential.user;
+      if (firebaseUser == null) return "Не вдалося створити користувача.";
+
+      await firebaseUser.updateDisplayName(name);
+      final newUser = AppUser(id: firebaseUser.uid, name: name, email: email);
+      await _databaseService.createUserProfile(newUser);
+      currentUserNotifier.value = newUser;
+      return null;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') return 'Пароль занадто слабкий.';
+      if (e.code == 'email-already-in-use')
+        return 'Акаунт з таким email вже існує.';
+      if (e.code == 'invalid-email') return 'Неправильний формат email.';
+      return 'Виникла помилка реєстрації.';
     }
   }
 
-  Future<void> login(String email) async {
-    await _sessionBox.put('currentUserEmail', email);
-    _loadCurrentUser();
+  Future<String?> login(
+      {required String email, required String password}) async {
+    try {
+      await _firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: password);
+      return null;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found' ||
+          e.code == 'wrong-password' ||
+          e.code == 'invalid-credential') {
+        return 'Неправильний email або пароль.';
+      }
+      if (e.code == 'invalid-email') return 'Неправильний формат email.';
+      return 'Виникла помилка входу.';
+    }
   }
 
   Future<void> logout() async {
-    await _sessionBox.delete('currentUserEmail');
-    _loadCurrentUser();
-  }
-
-  // Оновлений метод для збереження змін
-  void updateUser(AppUser user) {
-    user.save();
-    // Створюємо копію об'єкта, щоб ValueNotifier точно зафіксував зміну
-    currentUserNotifier.value = AppUser(
-      email: user.email,
-      name: user.name,
-      password: user.password,
-      totalDonations: user.totalDonations,
-      livesSaved: user.livesSaved,
-      totalPoints: user.totalPoints,
-      completedQuests: Map<String, DateTime>.from(user.completedQuests),
-    );
-  }
-
-  AppUser? getCurrentUser() {
-    return currentUserNotifier.value;
-  }
-
-  bool isLoggedIn() {
-    return _sessionBox.containsKey('currentUserEmail');
+    await _firebaseAuth.signOut();
   }
 }

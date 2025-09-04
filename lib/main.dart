@@ -1,17 +1,18 @@
 import 'package:donor_dashboard/app.dart';
-import 'package:donor_dashboard/data/models/app_user_model.dart';
 import 'package:donor_dashboard/features/auth/services/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
-  Hive.registerAdapter(AppUserAdapter());
-  await Hive.openBox<AppUser>('users');
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
-  // Ініціалізуємо сервіс ДО запуску додатку
-  await AuthService().init();
+  // Ініціалізуємо сервіс. Оскільки він синглтон,
+  // нам не потрібно передавати його екземпляр далі.
+  AuthService().init();
 
   runApp(const App());
 }

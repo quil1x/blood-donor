@@ -1,9 +1,8 @@
+import 'package:donor_dashboard/core/navigation/main_navigation_shell.dart';
 import 'package:donor_dashboard/core/theme/app_colors.dart';
 import 'package:donor_dashboard/features/auth/services/auth_service.dart';
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import '../../../data/models/app_user_model.dart';
-import 'package:donor_dashboard/core/navigation/main_navigation_shell.dart';
+import 'dart:ui';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -13,45 +12,39 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+  final AuthService _authService = AuthService();
+  String? _errorMessage;
+  bool _isLoading = false;
 
-  Future<void> _registerUser() async {
+  Future<void> _register() async {
     if (_formKey.currentState!.validate()) {
-      final userBox = Hive.box<AppUser>('users');
-      final email = _emailController.text;
-
-      if (userBox.containsKey(email)) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              backgroundColor: Colors.redAccent,
-              content: Text('Користувач з таким email вже існує')));
-        }
-        return;
-      }
-
-      // ВИПРАВЛЕНО: Створюємо користувача згідно з новою моделлю
-      final newUser = AppUser(
-        name: _nameController.text,
-        email: email,
-        password: _passwordController.text,
-        totalDonations: 0,
-        livesSaved: 0,
-        totalPoints: 0,
-        completedQuests: {}, // Створюємо пусту мапу
+      setState(() {
+        _isLoading = true;
+        _errorMessage = null;
+      });
+      final error = await _authService.register(
+        name: _nameController.text.trim(),
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
       );
-
-      await userBox.put(email, newUser);
-      await AuthService().login(email);
-
       if (mounted) {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const MainNavigationShell()),
-          (route) => false,
-        );
+        setState(() {
+          _isLoading = false;
+        });
+        if (error == null) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+                builder: (context) => const MainNavigationShell()),
+          );
+        } else {
+          setState(() {
+            _errorMessage = error;
+          });
+        }
       }
     }
   }
@@ -59,77 +52,142 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Text('Create Account',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: AppColors.lightTextPrimary,
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
-                  const Text('Sign up to get started',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: AppColors.lightTextSecondary, fontSize: 16)),
-                  const SizedBox(height: 40),
-                  TextFormField(
-                    controller: _nameController,
-                    style: const TextStyle(color: AppColors.lightTextPrimary),
-                    decoration: _buildInputDecoration(
-                        hint: 'Full Name', icon: Icons.person_outline),
-                    validator: (value) => (value == null || value.isEmpty)
-                        ? 'Введіть ваше ім\'я'
-                        : null,
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _emailController,
-                    style: const TextStyle(color: AppColors.lightTextPrimary),
-                    decoration: _buildInputDecoration(
-                        hint: 'Email', icon: Icons.email_outlined),
-                    validator: (value) =>
-                        (value == null || !value.contains('@'))
-                            ? 'Введіть коректний email'
-                            : null,
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _passwordController,
-                    obscureText: true,
-                    style: const TextStyle(color: AppColors.lightTextPrimary),
-                    decoration: _buildInputDecoration(
-                        hint: 'Password', icon: Icons.lock_outline),
-                    validator: (value) => (value == null || value.length < 6)
-                        ? 'Пароль має містити мінімум 6 символів'
-                        : null,
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: _confirmPasswordController,
-                    obscureText: true,
-                    style: const TextStyle(color: AppColors.lightTextPrimary),
-                    decoration: _buildInputDecoration(
-                        hint: 'Confirm Password', icon: Icons.lock_outline),
-                    validator: (value) => (value != _passwordController.text)
-                        ? 'Паролі не співпадають'
-                        : null,
-                  ),
-                  const SizedBox(height: 40),
-                  _buildSignUpButton(),
-                  const SizedBox(height: 32),
-                  _buildSignInLink(context),
-                ],
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: AppColors.lightTextPrimary),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [AppColors.lightBackground, Color(0xFFE2E8F0)],
+          ),
+        ),
+        child: Stack(
+          children: [
+            Positioned(
+                top: -100,
+                left: -100,
+                child: CircleShape(
+                    color: AppColors.greenAccent.withOpacity(0.1), size: 300)),
+            Positioned(
+                bottom: -150,
+                right: -150,
+                child: CircleShape(
+                    color: Colors.red.withOpacity(0.05), size: 400)),
+            Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: _buildGlassCard(context),
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGlassCard(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Container(
+          width: double.infinity,
+          constraints: const BoxConstraints(maxWidth: 400),
+          padding: const EdgeInsets.all(24.0),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.6),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.white.withOpacity(0.2)),
+          ),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Text('Створити акаунт',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.lightTextPrimary)),
+                const SizedBox(height: 8),
+                const Text('Приєднуйтесь до спільноти донорів',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: AppColors.lightTextSecondary)),
+                const SizedBox(height: 32),
+                TextFormField(
+                  controller: _nameController,
+                  // >>> ПОЧАТОК ЗМІН <<<
+                  style: const TextStyle(
+                      color: Colors.black), // Текст вводу чорний
+                  decoration:
+                      _inputDecoration('Повне ім\'я', Icons.person_outline),
+                  // >>> КІНЕЦЬ ЗМІН <<<
+                  validator: (value) => (value == null || value.isEmpty)
+                      ? 'Введіть ваше ім\'я'
+                      : null,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _emailController,
+                  // >>> ПОЧАТОК ЗМІН <<<
+                  style: const TextStyle(
+                      color: Colors.black), // Текст вводу чорний
+                  decoration: _inputDecoration(
+                      'Електронна пошта', Icons.email_outlined),
+                  // >>> КІНЕЦЬ ЗМІН <<<
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) => (value == null || !value.contains('@'))
+                      ? 'Введіть коректний email'
+                      : null,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  // >>> ПОЧАТОК ЗМІН <<<
+                  style: const TextStyle(
+                      color: Colors.black), // Текст вводу чорний
+                  decoration: _inputDecoration(
+                      'Пароль (мін. 6 символів)', Icons.lock_outline),
+                  // >>> КІНЕЦЬ ЗМІН <<<
+                  validator: (value) => (value == null || value.length < 6)
+                      ? 'Пароль занадто короткий'
+                      : null,
+                ),
+                const SizedBox(height: 24),
+                if (_errorMessage != null)
+                  Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: Text(_errorMessage!,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                              color: Colors.red, fontSize: 14))),
+                _isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : ElevatedButton(
+                        onPressed: _register,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.greenAccent,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                        ),
+                        child: const Text('ЗАРЕЄСТРУВАТИСЯ',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white)),
+                      ),
+              ],
             ),
           ),
         ),
@@ -137,46 +195,32 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     );
   }
 
-  InputDecoration _buildInputDecoration(
-          {required String hint, required IconData icon}) =>
-      InputDecoration(
-        prefixIcon: Icon(icon, color: AppColors.lightTextSecondary),
-        hintText: hint,
-        hintStyle: const TextStyle(color: AppColors.lightTextSecondary),
-        filled: true,
-        fillColor: AppColors.lightCard,
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.lightBorder)),
-        enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.lightBorder)),
-      );
+  InputDecoration _inputDecoration(String label, IconData icon) {
+    return InputDecoration(
+      labelText: label,
+      // >>> ПОЧАТОК ЗМІН (колір тексту підказки) <<<
+      labelStyle: const TextStyle(color: AppColors.lightTextSecondary),
+      hintStyle:
+          TextStyle(color: AppColors.lightTextSecondary.withOpacity(0.7)),
+      // >>> КІНЕЦЬ ЗМІН <<<
+      prefixIcon: Icon(icon, color: AppColors.lightTextSecondary),
+      filled: true,
+      fillColor: AppColors.lightBackground.withOpacity(0.8),
+      border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+    );
+  }
+}
 
-  Widget _buildSignUpButton() => ElevatedButton(
-        onPressed: _registerUser,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.greenAccent,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-        child: const Text('Sign Up',
-            style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.bold)),
-      );
-
-  Widget _buildSignInLink(BuildContext context) =>
-      Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        const Text("Already have an account?",
-            style: TextStyle(color: AppColors.lightTextSecondary)),
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Sign in',
-              style: TextStyle(
-                  color: AppColors.greenAccent, fontWeight: FontWeight.bold)),
-        ),
-      ]);
+class CircleShape extends StatelessWidget {
+  final Color color;
+  final double size;
+  const CircleShape({super.key, required this.color, required this.size});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(color: color, shape: BoxShape.circle));
+  }
 }

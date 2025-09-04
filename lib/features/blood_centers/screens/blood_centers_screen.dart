@@ -1,10 +1,11 @@
+import 'package:donor_dashboard/core/theme/app_colors.dart';
 import 'package:donor_dashboard/data/mock_data.dart';
+import 'package:donor_dashboard/features/auth/services/auth_service.dart';
+import 'package:donor_dashboard/features/auth/services/database_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:donor_dashboard/features/auth/services/auth_service.dart';
-import 'package:donor_dashboard/core/theme/app_colors.dart';
 
 class BloodCentersScreen extends StatelessWidget {
   final VoidCallback onUpdate;
@@ -12,14 +13,16 @@ class BloodCentersScreen extends StatelessWidget {
 
   void _completeVisitQuest(BuildContext context) {
     final authService = AuthService();
-    final currentUser = authService.getCurrentUser();
+    final databaseService = DatabaseService();
+    final currentUser = authService.currentUserNotifier.value;
     const questId = "visit_blood_center";
 
     if (currentUser != null &&
         !currentUser.completedQuests.containsKey(questId)) {
       currentUser.completedQuests[questId] = DateTime.now();
       currentUser.totalPoints += 150;
-      authService.updateUser(currentUser);
+      databaseService
+          .updateUserProfile(currentUser); // Оновлюємо через DatabaseService
       onUpdate();
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -30,9 +33,7 @@ class BloodCentersScreen extends StatelessWidget {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Ви вже виконували цей квест.'),
-        ),
+        const SnackBar(content: Text('Ви вже виконували цей квест.')),
       );
     }
   }
@@ -44,27 +45,20 @@ class BloodCentersScreen extends StatelessWidget {
         width: 80.0,
         height: 80.0,
         point: LatLng(center.latitude, center.longitude),
-        child: Icon(
-          Icons.location_pin,
-          color: Theme.of(context).primaryColor,
-          size: 40.0,
-        ),
+        child: Icon(Icons.location_pin,
+            color: Theme.of(context).primaryColor, size: 40.0),
       );
     }).toList();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Центри крові'),
-      ),
+      appBar: AppBar(title: const Text('Центри крові')),
       body: Column(
         children: [
           SizedBox(
             height: MediaQuery.of(context).size.height * 0.4,
             child: FlutterMap(
               options: const MapOptions(
-                initialCenter: LatLng(49.8397, 24.0297),
-                initialZoom: 6.0,
-              ),
+                  initialCenter: LatLng(49.8397, 24.0297), initialZoom: 6.0),
               children: [
                 TileLayer(
                   urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
