@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:donor_dashboard/data/models/app_user_model.dart';
 
@@ -17,9 +18,9 @@ class StorageService {
       final userJson = jsonEncode(user.toJson());
       await prefs.setString(_userKey, userJson);
       await prefs.setBool(_isLoggedInKey, true);
-      print('✅ Користувач збережено: ${user.name}');
+      debugPrint('✅ Користувач збережено: ${user.name}');
     } catch (e) {
-      print('❌ Помилка збереження користувача: $e');
+      debugPrint('❌ Помилка збереження користувача: $e');
     }
   }
 
@@ -32,14 +33,14 @@ class StorageService {
       if (userJson != null) {
         final userData = jsonDecode(userJson) as Map<String, dynamic>;
         final user = AppUser.fromJson(userData);
-        print('✅ Користувач завантажено: ${user.name}');
+        debugPrint('✅ Користувач завантажено: ${user.name}');
         return user;
       }
       
-      print('ℹ️ Користувач не знайдено в збережених даних');
+      debugPrint('ℹ️ Користувач не знайдено в збережених даних');
       return null;
     } catch (e) {
-      print('❌ Помилка завантаження користувача: $e');
+      debugPrint('❌ Помилка завантаження користувача: $e');
       return null;
     }
   }
@@ -50,7 +51,7 @@ class StorageService {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getBool(_isLoggedInKey) ?? false;
     } catch (e) {
-      print('❌ Помилка перевірки статусу входу: $e');
+      debugPrint('❌ Помилка перевірки статусу входу: $e');
       return false;
     }
   }
@@ -61,9 +62,9 @@ class StorageService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_userKey);
       await prefs.setBool(_isLoggedInKey, false);
-      print('✅ Дані користувача видалено');
+      debugPrint('✅ Дані користувача видалено');
     } catch (e) {
-      print('❌ Помилка видалення даних: $e');
+      debugPrint('❌ Помилка видалення даних: $e');
     }
   }
 
