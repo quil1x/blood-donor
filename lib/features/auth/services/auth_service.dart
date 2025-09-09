@@ -1,3 +1,4 @@
+// lib/features/auth/services/auth_service.dart
 import 'package:donor_dashboard/data/models/app_user_model.dart';
 import 'package:donor_dashboard/core/services/storage_service.dart';
 import 'package:flutter/foundation.dart';
@@ -61,6 +62,7 @@ class AuthService {
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         name: name,
         email: email,
+        password: password, // <-- ОСЬ ТУТ ВИПРАВЛЕННЯ
       );
 
       // Зберігаємо користувача в пам'яті та в збереженнях

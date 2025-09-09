@@ -1,4 +1,4 @@
-// Локальний сервіс автентифікації
+// lib/features/auth/services/local_auth_service.dart
 import 'package:donor_dashboard/data/models/app_user_model.dart';
 import 'package:donor_dashboard/core/services/storage_service.dart';
 import 'package:flutter/foundation.dart';
@@ -66,6 +66,7 @@ class LocalAuthService extends ChangeNotifier {
         id: DateTime.now().millisecondsSinceEpoch.toString(), // Генеруємо унікальний ID
         name: name,
         email: email,
+        password: password, // <-- ОСЬ ТУТ ВИПРАВЛЕННЯ
       );
 
       // Зберігаємо користувача в пам'яті та в збереженнях
