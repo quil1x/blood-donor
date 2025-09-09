@@ -51,6 +51,52 @@ class _ProfileScreenState extends State<ProfileScreen>
     }
   }
 
+  void _showLoginInfo(BuildContext context) {
+    final currentUser = _authService.currentUser;
+    if (currentUser == null) return;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Інформація для входу'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Щоб зайти на іншому пристрої, використовуйте:'),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppColors.lightBackground,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Email: ${currentUser.email}'),
+                  const SizedBox(height: 8),
+                  Text('Пароль: ${currentUser.password}'),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Примітка: Ці дані зберігаються локально. Для повноцінної синхронізації між пристроями потрібен сервер.',
+              style: TextStyle(fontSize: 12, color: AppColors.lightTextSecondary),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Зрозуміло'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,6 +105,12 @@ class _ProfileScreenState extends State<ProfileScreen>
         elevation: 0,
         backgroundColor: AppColors.lightBackground,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.info_outline,
+                color: AppColors.lightTextSecondary),
+            onPressed: () => _showLoginInfo(context),
+            tooltip: 'Інформація для входу',
+          ),
           IconButton(
             icon: const Icon(Icons.settings_outlined,
                 color: AppColors.lightTextSecondary),
