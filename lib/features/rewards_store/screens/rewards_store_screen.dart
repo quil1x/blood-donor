@@ -17,15 +17,22 @@ class RewardsStoreScreen extends StatefulWidget {
 class _RewardsStoreScreenState extends State<RewardsStoreScreen> {
   final StaticAuthService _authService = StaticAuthService();
 
-  void _handlePurchase(int cost, AppUser currentUser) {
+  Future<void> _handlePurchase(int cost, AppUser currentUser) async {
     if (currentUser.totalPoints >= cost) {
       currentUser.totalPoints -= cost;
-      _authService.updateUserProfile(currentUser);
-      widget.onUpdate();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Покупка успішна!'), backgroundColor: Colors.green),
-      );
+      final success = await _authService.updateUserProfile(currentUser);
+      if (success) {
+        widget.onUpdate();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Покупка успішна!'), backgroundColor: Colors.green),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Помилка оновлення профілю'), backgroundColor: Colors.red),
+        );
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

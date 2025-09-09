@@ -31,7 +31,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
     _questsFuture = Future.value(MockData.quests);
   }
 
-  void _handleCompleteQuest(QuestModel quest, AppUser currentUser) {
+  Future<void> _handleCompleteQuest(QuestModel quest, AppUser currentUser) async {
     if (!currentUser.completedQuests.containsKey(quest.id)) {
       debugPrint("🎯 Виконуємо квест: ${quest.title} (+${quest.rewardPoints} XP)");
       
@@ -40,19 +40,28 @@ class _QuestsScreenState extends State<QuestsScreen> {
       
       debugPrint("📊 Нові дані: балів: ${currentUser.totalPoints}, квестів: ${currentUser.completedQuests.length}");
       
-      _authService.updateUserProfile(currentUser);
-      widget.onUpdate();
+      // Чекаємо на оновлення профілю
+      final success = await _authService.updateUserProfile(currentUser);
+      if (success) {
+        widget.onUpdate();
+        // Оновлюємо стан екрану, щоб квест зник зі списку
+        setState(() {});
 
-      // Оновлюємо стан екрану, щоб квест зник зі списку
-      setState(() {});
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-              'Квест "${quest.title}" виконано! +${quest.rewardPoints} XP'),
-          backgroundColor: AppColors.greenAccent,
-        ),
-      );
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+                'Квест "${quest.title}" виконано! +${quest.rewardPoints} XP'),
+            backgroundColor: AppColors.greenAccent,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Помилка оновлення профілю'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     } else {
       debugPrint("⚠️ Квест ${quest.title} вже виконано");
     }

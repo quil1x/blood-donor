@@ -10,7 +10,7 @@ class BloodCentersScreen extends StatelessWidget {
   final VoidCallback onUpdate;
   const BloodCentersScreen({super.key, required this.onUpdate});
 
-  void _completeVisitQuest(BuildContext context) {
+  Future<void> _completeVisitQuest(BuildContext context) async {
     final authService = StaticAuthService();
     final currentUser = authService.currentUser;
     const questId = "visit_blood_center";
@@ -19,16 +19,25 @@ class BloodCentersScreen extends StatelessWidget {
         !currentUser.completedQuests.containsKey(questId)) {
       currentUser.completedQuests[questId] = DateTime.now();
       currentUser.totalPoints += 150;
-      authService
-          .updateUserProfile(currentUser); // Оновлюємо через LocalAuthService
-      onUpdate();
+      
+      final success = await authService.updateUserProfile(currentUser);
+      if (success) {
+        onUpdate();
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Квест "Розвідник" виконано! +150 XP'),
-          backgroundColor: AppColors.greenAccent,
-        ),
-      );
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Квест "Розвідник" виконано! +150 XP'),
+            backgroundColor: AppColors.greenAccent,
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Помилка оновлення профілю'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Ви вже виконували цей квест.')),
