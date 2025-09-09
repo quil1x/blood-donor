@@ -1,0 +1,24 @@
+{
+  "users": [
+    {
+      "id": "demo_user",
+      "name": "Демо Користувач",
+      "email": "demo@example.com",
+      "password": "demo123",
+      "totalDonations": 0,
+      "livesSaved": 0,
+      "totalPoints": 100,
+      "completedQuests": {}
+    },
+    {
+      "id": "admin_user",
+      "name": "Адміністратор",
+      "email": "admin@example.com",
+      "password": "admin123",
+      "totalDonations": 0,
+      "livesSaved": 0,
+      "totalPoints": 100,
+      "completedQuests": {}
+    }
+  ]
+}

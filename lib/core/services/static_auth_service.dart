@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:donor_dashboard/data/models/app_user_model.dart';
 import 'package:donor_dashboard/core/services/storage_service.dart';
+import 'package:donor_dashboard/core/services/simple_sync_service.dart';
 
 class StaticAuthService extends ChangeNotifier {
   static final StaticAuthService _instance = StaticAuthService._internal();
@@ -12,13 +13,15 @@ class StaticAuthService extends ChangeNotifier {
   AppUser? _currentUser;
   List<AppUser> _users = [];
   final StorageService _storageService = StorageService();
+  final SimpleSyncService _syncService = SimpleSyncService();
   
   AppUser? get currentUser => _currentUser;
   bool get isLoggedIn => _currentUser != null;
 
   Future<void> init() async {
-    debugPrint("🔍 Завантажуємо статичних користувачів...");
+    debugPrint("🔍 Завантажуємо користувачів...");
     
+    // Завантажуємо з локального файлу
     try {
       final String jsonString = await rootBundle.loadString('lib/data/static_users.json');
       final Map<String, dynamic> jsonData = jsonDecode(jsonString);
@@ -27,7 +30,13 @@ class StaticAuthService extends ChangeNotifier {
           .map((userJson) => AppUser.fromJson(userJson))
           .toList();
       
-      debugPrint("✅ Завантажено ${_users.length} статичних користувачів");
+      debugPrint("✅ Завантажено ${_users.length} користувачів з локального файлу");
+      for (final user in _users) {
+        debugPrint("👤 Користувач: ${user.name} (${user.email})");
+      }
+      
+      // Синхронізуємо з сервісом
+      await _syncService.saveUsers(_users);
     } catch (e) {
       debugPrint("❌ Помилка завантаження користувачів: $e");
     }
@@ -54,6 +63,10 @@ class StaticAuthService extends ChangeNotifier {
   }) async {
     try {
       debugPrint("🔍 Пошук користувача: $email");
+      debugPrint("🔍 Доступні користувачі: ${_users.length}");
+      for (final u in _users) {
+        debugPrint("👤 ${u.email} (${u.password})");
+      }
       
       // Спочатку шукаємо в статичному списку
       AppUser? user;
@@ -61,6 +74,7 @@ class StaticAuthService extends ChangeNotifier {
         user = _users.firstWhere(
           (user) => user.email == email && user.password == password,
         );
+        debugPrint("✅ Знайдено користувача в статичному списку: ${user.name}");
       } catch (e) {
         // Якщо не знайшли в статичному списку, шукаємо в збережених даних
         debugPrint("🔍 Користувач не знайдений в статичному списку, шукаємо в збережених даних...");
@@ -129,10 +143,19 @@ class StaticAuthService extends ChangeNotifier {
       _users.add(newUser);
       _currentUser = newUser;
       await _storageService.saveUser(newUser);
+      
+      // Синхронізуємо з сервісом
+      final success = await _syncService.addUser(newUser);
+      if (success) {
+        debugPrint("✅ Користувач синхронізований");
+      } else {
+        debugPrint("⚠️ Не вдалося синхронізувати, але користувач зареєстрований локально");
+      }
+      
       notifyListeners();
       
       debugPrint("✅ Користувач успішно зареєстрований: ${newUser.name}");
-      debugPrint("ℹ️ Користувач буде доступний на всіх пристроях після перезапуску застосунку");
+      debugPrint("ℹ️ Користувач буде доступний на всіх пристроях через GitHub Gist");
       return null;
     } catch (e) {
       debugPrint("❌ Помилка реєстрації: $e");
@@ -157,6 +180,15 @@ class StaticAuthService extends ChangeNotifier {
         _users[index] = user;
         _currentUser = user;
         await _storageService.updateUser(user);
+        
+        // Синхронізуємо з сервісом
+        final success = await _syncService.updateUser(user);
+        if (success) {
+          debugPrint("✅ Профіль синхронізований");
+        } else {
+          debugPrint("⚠️ Не вдалося синхронізувати, але профіль оновлено локально");
+        }
+        
         notifyListeners();
         
         debugPrint("✅ Профіль оновлено: ${user.name}, балів: ${user.totalPoints}");
@@ -176,12 +208,4 @@ class StaticAuthService extends ChangeNotifier {
   // Отримання поточного користувача
   AppUser? getCurrentUser() => _currentUser;
   
-  // Метод для збереження всіх користувачів (для демонстрації)
-  void _saveUsersToFile() {
-    // В реальному застосунку тут був би API виклик до сервера
-    debugPrint("💾 Зберігаємо користувачів для синхронізації між пристроями...");
-    for (final user in _users) {
-      debugPrint("👤 Користувач: ${user.name} (${user.email})");
-    }
-  }
 }
