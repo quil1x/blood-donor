@@ -1,7 +1,7 @@
 import 'package:donor_dashboard/core/navigation/main_navigation_shell.dart';
 import 'package:donor_dashboard/core/theme/app_theme.dart';
 import 'package:donor_dashboard/features/auth/screens/login_screen.dart';
-import 'package:donor_dashboard/features/auth/services/local_auth_service.dart';
+import 'package:donor_dashboard/core/services/static_auth_service.dart';
 import 'package:flutter/material.dart';
 
 class App extends StatelessWidget {
@@ -9,8 +9,8 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Отримуємо екземпляр LocalAuthService тут
-    final LocalAuthService authService = LocalAuthService();
+    // Отримуємо екземпляр StaticAuthService тут
+    final StaticAuthService authService = StaticAuthService();
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,

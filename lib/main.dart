@@ -1,12 +1,12 @@
 import 'package:donor_dashboard/app.dart';
-import 'package:donor_dashboard/features/auth/services/local_auth_service.dart';
+import 'package:donor_dashboard/core/services/static_auth_service.dart';
 import 'package:flutter/material.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Ініціалізуємо локальний сервіс автентифікації
-  await LocalAuthService().init();
+  // Ініціалізуємо статичний сервіс автентифікації
+  await StaticAuthService().init();
 
   runApp(const App());
 }

@@ -1,0 +1,54 @@
+{
+  "users": [
+    {
+      "id": "user1",
+      "name": "Тестовий Користувач 1",
+      "email": "test1@example.com",
+      "password": "123456",
+      "totalDonations": 0,
+      "livesSaved": 0,
+      "totalPoints": 100,
+      "completedQuests": {}
+    },
+    {
+      "id": "user2", 
+      "name": "Тестовий Користувач 2",
+      "email": "test2@example.com",
+      "password": "123456",
+      "totalDonations": 0,
+      "livesSaved": 0,
+      "totalPoints": 100,
+      "completedQuests": {}
+    },
+    {
+      "id": "user3",
+      "name": "Тестовий Користувач 3", 
+      "email": "test3@example.com",
+      "password": "123456",
+      "totalDonations": 0,
+      "livesSaved": 0,
+      "totalPoints": 100,
+      "completedQuests": {}
+    },
+    {
+      "id": "user4",
+      "name": "Тестовий Користувач 4",
+      "email": "test4@example.com", 
+      "password": "123456",
+      "totalDonations": 0,
+      "livesSaved": 0,
+      "totalPoints": 100,
+      "completedQuests": {}
+    },
+    {
+      "id": "user5",
+      "name": "Тестовий Користувач 5",
+      "email": "test5@example.com",
+      "password": "123456", 
+      "totalDonations": 0,
+      "livesSaved": 0,
+      "totalPoints": 100,
+      "completedQuests": {}
+    }
+  ]
+}
