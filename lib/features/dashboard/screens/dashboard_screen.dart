@@ -5,7 +5,7 @@ import 'package:donor_dashboard/data/mock_data.dart';
 import 'package:donor_dashboard/core/theme/app_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:donor_dashboard/features/auth/services/local_auth_service.dart';
+import 'package:donor_dashboard/core/services/static_auth_service.dart';
 
 // Перетворюємо на StatefulWidget для завантаження даних
 class DashboardScreen extends StatefulWidget {
@@ -17,7 +17,7 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  final LocalAuthService _authService = LocalAuthService();
+  final StaticAuthService _authService = StaticAuthService();
   late Future<List<QuestModel>> _questsFuture;
 
   @override

@@ -2,7 +2,7 @@
 
 import 'package:donor_dashboard/core/widgets/reward_card.dart';
 import 'package:donor_dashboard/data/mock_data.dart';
-import 'package:donor_dashboard/features/auth/services/local_auth_service.dart';
+import 'package:donor_dashboard/core/services/static_auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:donor_dashboard/data/models/app_user_model.dart';
 
@@ -15,7 +15,7 @@ class RewardsStoreScreen extends StatefulWidget {
 }
 
 class _RewardsStoreScreenState extends State<RewardsStoreScreen> {
-  final LocalAuthService _authService = LocalAuthService();
+  final StaticAuthService _authService = StaticAuthService();
 
   void _handlePurchase(int cost, AppUser currentUser) {
     if (currentUser.totalPoints >= cost) {

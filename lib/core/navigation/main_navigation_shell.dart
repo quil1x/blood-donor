@@ -3,7 +3,7 @@ import 'package:donor_dashboard/features/dashboard/screens/dashboard_screen.dart
 import 'package:donor_dashboard/features/profile/screens/profile_screen.dart';
 import 'package:donor_dashboard/features/quests/screens/quests_screen.dart';
 import 'package:donor_dashboard/features/rewards_store/screens/rewards_store_screen.dart';
-import 'package:donor_dashboard/features/auth/services/local_auth_service.dart';
+import 'package:donor_dashboard/core/services/static_auth_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -16,7 +16,7 @@ class MainNavigationShell extends StatefulWidget {
 
 class _MainNavigationShellState extends State<MainNavigationShell> {
   int _selectedIndex = 0;
-  final LocalAuthService _authService = LocalAuthService();
+  final StaticAuthService _authService = StaticAuthService();
 
   // Створюємо список віджетів всередині initState, щоб передати реальний метод.
   late final List<Widget> _screens;

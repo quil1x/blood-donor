@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:donor_dashboard/data/models/app_user_model.dart';
+import 'package:donor_dashboard/core/services/storage_service.dart';
 
 class StaticAuthService extends ChangeNotifier {
   static final StaticAuthService _instance = StaticAuthService._internal();
@@ -10,6 +11,7 @@ class StaticAuthService extends ChangeNotifier {
 
   AppUser? _currentUser;
   List<AppUser> _users = [];
+  final StorageService _storageService = StorageService();
   
   AppUser? get currentUser => _currentUser;
   bool get isLoggedIn => _currentUser != null;
@@ -30,6 +32,14 @@ class StaticAuthService extends ChangeNotifier {
       debugPrint("❌ Помилка завантаження користувачів: $e");
     }
     
+    // Завантажуємо збереженого користувача
+    _currentUser = await _storageService.loadUser();
+    if (_currentUser != null) {
+      debugPrint("✅ Знайдено збереженого користувача: ${_currentUser!.name}");
+    } else {
+      debugPrint("ℹ️ Збереженого користувача не знайдено");
+    }
+    
     notifyListeners();
   }
 
@@ -46,6 +56,7 @@ class StaticAuthService extends ChangeNotifier {
       );
       
       _currentUser = user;
+      await _storageService.saveUser(user);
       notifyListeners();
       
       debugPrint("✅ Успішний вхід: ${user.name}");
@@ -90,6 +101,7 @@ class StaticAuthService extends ChangeNotifier {
       // Додаємо користувача до списку
       _users.add(newUser);
       _currentUser = newUser;
+      await _storageService.saveUser(newUser);
       notifyListeners();
       
       debugPrint("✅ Користувач успішно зареєстрований: ${newUser.name}");
@@ -103,6 +115,7 @@ class StaticAuthService extends ChangeNotifier {
   Future<void> logout() async {
     debugPrint("🔍 Вихід з системи...");
     _currentUser = null;
+    await _storageService.clearUser();
     notifyListeners();
     debugPrint("✅ Користувач вийшов з системи");
   }
@@ -115,6 +128,7 @@ class StaticAuthService extends ChangeNotifier {
       if (index != -1) {
         _users[index] = user;
         _currentUser = user;
+        await _storageService.updateUser(user);
         notifyListeners();
         
         debugPrint("✅ Профіль оновлено: ${user.name}, балів: ${user.totalPoints}");
@@ -130,4 +144,7 @@ class StaticAuthService extends ChangeNotifier {
 
   // Отримання списку всіх користувачів для тестування
   List<AppUser> getAllUsers() => List.from(_users);
+  
+  // Отримання поточного користувача
+  AppUser? getCurrentUser() => _currentUser;
 }

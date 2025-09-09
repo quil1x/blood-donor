@@ -3,7 +3,7 @@
 import 'package:donor_dashboard/core/theme/app_colors.dart';
 import 'package:donor_dashboard/core/widgets/challenge_card.dart';
 import 'package:donor_dashboard/data/models/quest_model.dart';
-import 'package:donor_dashboard/features/auth/services/local_auth_service.dart';
+import 'package:donor_dashboard/core/services/static_auth_service.dart';
 import 'package:donor_dashboard/data/mock_data.dart';
 import 'package:flutter/material.dart';
 import 'package:donor_dashboard/data/models/app_user_model.dart';
@@ -17,7 +17,7 @@ class QuestsScreen extends StatefulWidget {
 }
 
 class _QuestsScreenState extends State<QuestsScreen> {
-  final LocalAuthService _authService = LocalAuthService();
+  final StaticAuthService _authService = StaticAuthService();
   late Future<List<QuestModel>> _questsFuture;
   final List<String> manualQuests = [
     "invite_friend",

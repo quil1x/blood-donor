@@ -1,5 +1,5 @@
 import 'package:donor_dashboard/features/auth/screens/login_screen.dart';
-import 'package:donor_dashboard/features/auth/services/local_auth_service.dart';
+import 'package:donor_dashboard/core/services/static_auth_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:donor_dashboard/core/theme/app_colors.dart';
@@ -18,7 +18,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
-  final LocalAuthService _authService = LocalAuthService();
+  final StaticAuthService _authService = StaticAuthService();
 
   @override
   void initState() {
