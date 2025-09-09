@@ -24,10 +24,10 @@ class AppUser {
       'id': id,
       'name': name,
       'email': email,
-      'totalDonations': totalDonations,
-      'livesSaved': livesSaved,
-      'totalPoints': totalPoints,
-      'completedQuests': completedQuests
+      'total_donations': totalDonations,
+      'lives_saved': livesSaved,
+      'total_points': totalPoints,
+      'completed_quests': completedQuests
           .map((key, value) => MapEntry(key, value.toIso8601String())),
     };
   }
@@ -37,10 +37,10 @@ class AppUser {
       id: json['id'] ?? '',
       name: json['name'] ?? '',
       email: json['email'] ?? '',
-      totalDonations: json['totalDonations'] ?? 0,
-      livesSaved: json['livesSaved'] ?? 0,
-      totalPoints: json['totalPoints'] ?? 0,
-      completedQuests: (json['completedQuests'] as Map<String, dynamic>?)?.map(
+      totalDonations: json['total_donations'] ?? 0,
+      livesSaved: json['lives_saved'] ?? 0,
+      totalPoints: json['total_points'] ?? 0,
+      completedQuests: (json['completed_quests'] as Map<String, dynamic>?)?.map(
             (key, value) => MapEntry(key, DateTime.parse(value as String)),
           ) ??
           {},

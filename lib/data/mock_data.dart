@@ -1,11 +1,7 @@
 import 'package:donor_dashboard/data/models/blood_center_model.dart';
 import 'package:donor_dashboard/data/models/donation_model.dart';
-// --- ВИПРАВЛЕНО: Правильний шлях до файлу ---
 import 'package:donor_dashboard/data/models/quest_model.dart';
-// --- КІНЕЦЬ ---
 import 'package:donor_dashboard/data/models/reward_model.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 // Список квестів, розширений та збалансований
 var mockQuests = [
@@ -15,21 +11,21 @@ var mockQuests = [
     title: "Перша донація",
     description: "Зареєструйте свою першу донацію в профілі",
     rewardPoints: 500,
-    icon: CupertinoIcons.drop_fill,
+    iconName: "drop_fill",
   ),
   QuestModel(
     id: "visit_blood_center",
     title: "Розвідник",
     description: "Заплануйте візит до будь-якого центру крові",
     rewardPoints: 150,
-    icon: CupertinoIcons.map_pin_ellipse,
+    iconName: "map_pin_ellipse",
   ),
   QuestModel(
     id: "invite_friend",
     title: "Запроси друга",
     description: "Запросіть друга стати донором",
     rewardPoints: 300,
-    icon: CupertinoIcons.person_2_fill,
+    iconName: "person_2_fill",
   ),
 
   // Квести на кількість донацій
@@ -38,21 +34,21 @@ var mockQuests = [
     title: "Адепт донорства",
     description: "Зробіть 3 донації",
     rewardPoints: 1000,
-    icon: CupertinoIcons.flame_fill,
+    iconName: "flame_fill",
   ),
   QuestModel(
     id: "donor_expert",
     title: "Експерт донорства",
     description: "Зробіть 5 донацій",
     rewardPoints: 1500,
-    icon: CupertinoIcons.star_fill,
+    iconName: "star_fill",
   ),
   QuestModel(
     id: "donor_master",
     title: "Майстер донорства",
     description: "Зробіть 10 донацій",
     rewardPoints: 3000,
-    icon: CupertinoIcons.shield_fill,
+    iconName: "shield_fill",
   ),
 
   // Соціальні та освітні квести
@@ -61,21 +57,28 @@ var mockQuests = [
     title: "Приклад для наслідування",
     description: "Поділіться своїм досягненням у соцмережах",
     rewardPoints: 200,
-    icon: CupertinoIcons.share_up,
+    iconName: "share_up",
   ),
   QuestModel(
     id: "read_article",
     title: "Допитливий розум",
     description: "Прочитайте статтю про користь донорства",
     rewardPoints: 100,
-    icon: CupertinoIcons.book_fill,
+    iconName: "book_fill",
   ),
 ];
 
 // --- Решта мок-даних без змін ---
 
+class MockData {
+  static List<QuestModel> get quests => mockQuests;
+  static List<BloodCenterModel> get bloodCenters => mockBloodCenters;
+  static List<RewardModel> get rewards => mockRewards;
+}
+
 final mockBloodCenters = [
   BloodCenterModel(
+    id: "kyiv_center",
     name: "Київський міський центр крові",
     address: "вул. Максима Берлинського, 12",
     workingHours: "Пн-Пт: 08:00 - 16:00",
@@ -84,6 +87,7 @@ final mockBloodCenters = [
     longitude: 30.4485,
   ),
   BloodCenterModel(
+    id: "lviv_center",
     name: "Львівський обласний центр служби крові",
     address: "вул. Пекарська, 65",
     workingHours: "Пн-Пт: 09:00 - 15:00",
@@ -92,6 +96,7 @@ final mockBloodCenters = [
     longitude: 24.0492,
   ),
   BloodCenterModel(
+    id: "odessa_center",
     name: "Одеська обласна станція переливання крові",
     address: "Бісквітний пров., 2/3",
     workingHours: "Пн-Пт: 08:30 - 14:00",
@@ -103,28 +108,32 @@ final mockBloodCenters = [
 
 final mockRewards = [
   RewardModel(
+    id: "blood_analysis",
     title: "Безкоштовний аналіз крові",
     description: "Повний біохімічний аналіз",
     cost: 2000,
-    icon: Icons.science_outlined,
+    iconName: "science_outlined",
   ),
   RewardModel(
+    id: "cinema_ticket",
     title: "Квиток в кіно",
     description: "На будь-який сеанс у мережі",
     cost: 1500,
-    icon: CupertinoIcons.ticket_fill,
+    iconName: "ticket_fill",
   ),
   RewardModel(
+    id: "gym_certificate",
     title: "Сертифікат у спортзал",
     description: "Місячний абонемент",
     cost: 5000,
-    icon: Icons.fitness_center,
+    iconName: "fitness_center",
   ),
   RewardModel(
+    id: "coffee",
     title: "Чашка кави",
     description: "Безкоштовна кава у партнера",
     cost: 500,
-    icon: Icons.coffee,
+    iconName: "coffee",
   ),
 ];
 

@@ -1,4 +1,5 @@
 class BloodCenterModel {
+  final String id;
   final String name;
   final String address;
   final String workingHours;
@@ -7,6 +8,7 @@ class BloodCenterModel {
   final double longitude;
 
   BloodCenterModel({
+    required this.id,
     required this.name,
     required this.address,
     required this.workingHours,

@@ -2,8 +2,7 @@
 
 import 'package:donor_dashboard/core/widgets/reward_card.dart';
 import 'package:donor_dashboard/data/mock_data.dart';
-import 'package:donor_dashboard/features/auth/services/auth_service.dart';
-import 'package:donor_dashboard/features/auth/services/database_service.dart';
+import 'package:donor_dashboard/features/auth/services/local_auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:donor_dashboard/data/models/app_user_model.dart';
 
@@ -16,13 +15,12 @@ class RewardsStoreScreen extends StatefulWidget {
 }
 
 class _RewardsStoreScreenState extends State<RewardsStoreScreen> {
-  final AuthService _authService = AuthService();
-  final DatabaseService _databaseService = DatabaseService();
+  final LocalAuthService _authService = LocalAuthService();
 
   void _handlePurchase(int cost, AppUser currentUser) {
     if (currentUser.totalPoints >= cost) {
       currentUser.totalPoints -= cost;
-      _databaseService.updateUserProfile(currentUser);
+      _authService.updateUserProfile(currentUser);
       widget.onUpdate();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -40,9 +38,10 @@ class _RewardsStoreScreenState extends State<RewardsStoreScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Магазин бонусів')),
-      body: ValueListenableBuilder<AppUser?>(
-        valueListenable: _authService.currentUserNotifier,
-        builder: (context, currentUser, child) {
+      body: ListenableBuilder(
+        listenable: _authService,
+        builder: (context, child) {
+          final currentUser = _authService.currentUser;
           if (currentUser == null) {
             return const Center(child: Text("Помилка завантаження даних."));
           }

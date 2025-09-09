@@ -1,13 +1,11 @@
 import 'package:donor_dashboard/core/widgets/challenge_card.dart';
 import 'package:donor_dashboard/core/widgets/stat_card.dart';
 import 'package:donor_dashboard/data/models/quest_model.dart'; // Імпортуємо модель квестів
-import 'package:donor_dashboard/features/auth/services/database_service.dart'; // Імпортуємо сервіс бази даних
-// import 'package:donor_dashboard/data/mock_data.dart'; // Більше не потрібен
+import 'package:donor_dashboard/data/mock_data.dart';
 import 'package:donor_dashboard/core/theme/app_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:donor_dashboard/features/auth/services/auth_service.dart';
-import 'package:donor_dashboard/data/models/app_user_model.dart';
+import 'package:donor_dashboard/features/auth/services/local_auth_service.dart';
 
 // Перетворюємо на StatefulWidget для завантаження даних
 class DashboardScreen extends StatefulWidget {
@@ -19,24 +17,34 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  final AuthService _authService = AuthService();
-  final DatabaseService _databaseService = DatabaseService();
+  final LocalAuthService _authService = LocalAuthService();
   late Future<List<QuestModel>> _questsFuture;
 
   @override
   void initState() {
     super.initState();
     // Завантажуємо квести при першому запуску екрану
-    _questsFuture = _databaseService.getQuests();
+    _questsFuture = Future.value(MockData.quests);
   }
 
   // Метод для оновлення даних при "потягуванні"
   Future<void> _refreshData() async {
     setState(() {
-      _questsFuture = _databaseService.getQuests();
+      _questsFuture = Future.value(MockData.quests);
     });
     // Ця функція оновить дані користувача (на випадок, якщо вони змінились)
     widget.onUpdate();
+  }
+
+  @override
+  void didUpdateWidget(DashboardScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Оновлюємо дані коли змінюється onUpdate callback
+    if (oldWidget.onUpdate != widget.onUpdate) {
+      setState(() {
+        _questsFuture = Future.value(MockData.quests);
+      });
+    }
   }
 
   @override
@@ -45,12 +53,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return Scaffold(
       // ValueListenableBuilder слухає зміни користувача (напр., оновлення балів)
-      body: ValueListenableBuilder<AppUser?>(
-        valueListenable: _authService.currentUserNotifier,
-        builder: (context, currentUser, child) {
+      body: ListenableBuilder(
+        listenable: _authService,
+        builder: (context, child) {
+          final currentUser = _authService.currentUser;
           if (currentUser == null) {
             return const Center(child: CircularProgressIndicator());
           }
+          
+          debugPrint("📊 Дашборд: Оновлення даних - балів: ${currentUser.totalPoints}, квестів: ${currentUser.completedQuests.length}");
+          debugPrint("📊 Дашборд: ID користувача: ${currentUser.id}");
+          debugPrint("📊 Дашборд: Час оновлення: ${DateTime.now()}");
 
           // FutureBuilder завантажує квести
           return FutureBuilder<List<QuestModel>>(

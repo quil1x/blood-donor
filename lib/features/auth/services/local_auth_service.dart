@@ -1,42 +1,47 @@
+// Локальний сервіс автентифікації
 import 'package:donor_dashboard/data/models/app_user_model.dart';
 import 'package:flutter/foundation.dart';
 
-class AuthService {
+class LocalAuthService extends ChangeNotifier {
   // --- Створюємо єдиний екземпляр сервісу (синглтон) ---
-  static final AuthService _instance = AuthService._internal();
+  static final LocalAuthService _instance = LocalAuthService._internal();
 
   // Фабричний конструктор, який завжди повертає той самий екземпляр
-  factory AuthService() {
+  factory LocalAuthService() {
     return _instance;
   }
 
   // Приватний конструктор
-  AuthService._internal();
-  // ---------------------------------------------------------
+  LocalAuthService._internal();
 
-  final ValueNotifier<AppUser?> currentUserNotifier = ValueNotifier(null);
   AppUser? _currentUser;
+  
+  // Геттер для отримання поточного користувача
+  AppUser? get currentUser => _currentUser;
 
   // Цей метод викликається один раз при старті застосунку
   void init() {
-    debugPrint("🔍 Ініціалізуємо AuthService...");
+    debugPrint("🔍 Ініціалізуємо локальний AuthService...");
     
     // Перевіряємо, чи є залогінений користувач
     if (_currentUser != null) {
       debugPrint("✅ Знайдено залогіненого користувача: ${_currentUser!.name}");
-      currentUserNotifier.value = _currentUser;
     } else {
       debugPrint("ℹ️ Користувач не залогінений");
-      currentUserNotifier.value = null;
     }
+    
+    notifyListeners();
   }
 
   // Реєстрація користувача
-  Future<String?> register(
-      {required String name,
-      required String email,
-      required String password}) async {
+  Future<String?> register({
+    required String name,
+    required String email,
+    required String password,
+  }) async {
     try {
+      debugPrint("🔍 Починаємо реєстрацію користувача: $email");
+      
       // Валідація пароля
       if (password.length < 6) {
         return 'Пароль занадто слабкий.';
@@ -54,17 +59,18 @@ class AuthService {
 
       // Створюємо нового користувача
       final newUser = AppUser(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        id: DateTime.now().millisecondsSinceEpoch.toString(), // Генеруємо унікальний ID
         name: name,
         email: email,
       );
 
       // Зберігаємо користувача в пам'яті
       _currentUser = newUser;
-      currentUserNotifier.value = newUser;
       
       debugPrint("✅ Користувач успішно зареєстрований: ${newUser.id}");
-      return null;
+      notifyListeners();
+      
+      return null; // Успішна реєстрація
     } catch (e) {
       debugPrint("❌ Помилка реєстрації: $e");
       return 'Виникла помилка реєстрації.';
@@ -72,9 +78,13 @@ class AuthService {
   }
 
   // Логін користувача
-  Future<String?> login(
-      {required String email, required String password}) async {
+  Future<String?> login({
+    required String email,
+    required String password,
+  }) async {
     try {
+      debugPrint("🔍 Починаємо логін користувача: $email");
+      
       // Валідація email
       if (!email.contains('@') || !email.contains('.')) {
         return 'Неправильний формат email.';
@@ -87,7 +97,7 @@ class AuthService {
       }
 
       // Встановлюємо поточного користувача
-      currentUserNotifier.value = _currentUser;
+      notifyListeners();
       
       debugPrint("✅ Користувач успішно залогінений: ${_currentUser!.name}");
       return null; // Успішний логін
@@ -101,7 +111,41 @@ class AuthService {
   Future<void> logout() async {
     debugPrint("🔍 Вихід з системи...");
     _currentUser = null;
-    currentUserNotifier.value = null;
+    notifyListeners();
     debugPrint("✅ Користувач вийшов з системи");
   }
+
+  // Оновлення профілю користувача
+  Future<bool> updateUserProfile(AppUser user) async {
+    try {
+      debugPrint("🔄 Починаємо оновлення профілю...");
+      debugPrint("📊 Старі дані: балів: ${_currentUser?.totalPoints ?? 0}, квестів: ${_currentUser?.completedQuests.length ?? 0}");
+      debugPrint("📊 Нові дані: балів: ${user.totalPoints}, квестів: ${user.completedQuests.length}");
+      
+      _currentUser = user;
+      
+      debugPrint("🔄 Сповіщаємо слухачів про зміни...");
+      notifyListeners();
+      
+      debugPrint("✅ Профіль користувача оновлено: ${user.name}, балів: ${user.totalPoints}, квестів: ${user.completedQuests.length}");
+      debugPrint("🔄 ChangeNotifier оновлено, слухачі будуть сповіщені");
+      
+      // Додаткова перевірка
+      debugPrint("🔍 Перевірка: _currentUser == user: ${_currentUser == user}");
+      debugPrint("🔍 Перевірка: _currentUser.totalPoints: ${_currentUser?.totalPoints}");
+      
+      return true;
+    } catch (e) {
+      debugPrint("❌ Помилка оновлення профілю: $e");
+      return false;
+    }
+  }
+
+  // Отримання поточного користувача
+  AppUser? getCurrentUser() {
+    return _currentUser;
+  }
+
+  // Перевірка, чи залогінений користувач
+  bool get isLoggedIn => _currentUser != null;
 }

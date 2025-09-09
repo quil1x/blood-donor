@@ -1,6 +1,6 @@
 import 'package:donor_dashboard/core/navigation/main_navigation_shell.dart';
 import 'package:donor_dashboard/core/theme/app_colors.dart';
-import 'package:donor_dashboard/features/auth/services/auth_service.dart';
+import 'package:donor_dashboard/features/auth/services/local_auth_service.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 
@@ -16,7 +16,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final AuthService _authService = AuthService();
+  final LocalAuthService _authService = LocalAuthService();
   String? _errorMessage;
   bool _isLoading = false;
 

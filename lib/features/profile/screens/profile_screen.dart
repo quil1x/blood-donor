@@ -1,5 +1,5 @@
 import 'package:donor_dashboard/features/auth/screens/login_screen.dart';
-import 'package:donor_dashboard/features/auth/services/auth_service.dart';
+import 'package:donor_dashboard/features/auth/services/local_auth_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:donor_dashboard/core/theme/app_colors.dart';
@@ -18,12 +18,21 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
-  final AuthService _authService = AuthService();
+  final LocalAuthService _authService = LocalAuthService();
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+  }
+
+  @override
+  void didUpdateWidget(ProfileScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Оновлюємо стан коли змінюється onUpdate callback
+    if (oldWidget.onUpdate != widget.onUpdate) {
+      setState(() {});
+    }
   }
 
   @override
@@ -58,12 +67,17 @@ class _ProfileScreenState extends State<ProfileScreen>
           )
         ],
       ),
-      body: ValueListenableBuilder<AppUser?>(
-        valueListenable: _authService.currentUserNotifier,
-        builder: (context, currentUser, child) {
+      body: ListenableBuilder(
+        listenable: _authService,
+        builder: (context, child) {
+          final currentUser = _authService.currentUser;
           if (currentUser == null) {
             return const Center(child: Text("Користувача не знайдено."));
           }
+          
+          debugPrint("👤 Профіль: Оновлення даних - балів: ${currentUser.totalPoints}, квестів: ${currentUser.completedQuests.length}");
+          debugPrint("👤 Профіль: ID користувача: ${currentUser.id}");
+          debugPrint("👤 Профіль: Час оновлення: ${DateTime.now()}");
           return NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) {
               return [

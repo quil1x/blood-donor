@@ -1,7 +1,6 @@
 import 'package:donor_dashboard/core/theme/app_colors.dart';
 import 'package:donor_dashboard/data/mock_data.dart';
-import 'package:donor_dashboard/features/auth/services/auth_service.dart';
-import 'package:donor_dashboard/features/auth/services/database_service.dart';
+import 'package:donor_dashboard/features/auth/services/local_auth_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -12,17 +11,16 @@ class BloodCentersScreen extends StatelessWidget {
   const BloodCentersScreen({super.key, required this.onUpdate});
 
   void _completeVisitQuest(BuildContext context) {
-    final authService = AuthService();
-    final databaseService = DatabaseService();
-    final currentUser = authService.currentUserNotifier.value;
+    final authService = LocalAuthService();
+    final currentUser = authService.currentUser;
     const questId = "visit_blood_center";
 
     if (currentUser != null &&
         !currentUser.completedQuests.containsKey(questId)) {
       currentUser.completedQuests[questId] = DateTime.now();
       currentUser.totalPoints += 150;
-      databaseService
-          .updateUserProfile(currentUser); // Оновлюємо через DatabaseService
+      authService
+          .updateUserProfile(currentUser); // Оновлюємо через LocalAuthService
       onUpdate();
 
       ScaffoldMessenger.of(context).showSnackBar(
