@@ -6,7 +6,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   // Ініціалізуємо локальний сервіс автентифікації
-  LocalAuthService().init();
+  await LocalAuthService().init();
 
   runApp(const App());
 }

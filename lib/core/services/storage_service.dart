@@ -1,0 +1,74 @@
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:donor_dashboard/data/models/app_user_model.dart';
+
+class StorageService {
+  static final StorageService _instance = StorageService._internal();
+  factory StorageService() => _instance;
+  StorageService._internal();
+
+  static const String _userKey = 'current_user';
+  static const String _isLoggedInKey = 'is_logged_in';
+
+  // Збереження користувача
+  Future<void> saveUser(AppUser user) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userJson = jsonEncode(user.toJson());
+      await prefs.setString(_userKey, userJson);
+      await prefs.setBool(_isLoggedInKey, true);
+      print('✅ Користувач збережено: ${user.name}');
+    } catch (e) {
+      print('❌ Помилка збереження користувача: $e');
+    }
+  }
+
+  // Завантаження користувача
+  Future<AppUser?> loadUser() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userJson = prefs.getString(_userKey);
+      
+      if (userJson != null) {
+        final userData = jsonDecode(userJson) as Map<String, dynamic>;
+        final user = AppUser.fromJson(userData);
+        print('✅ Користувач завантажено: ${user.name}');
+        return user;
+      }
+      
+      print('ℹ️ Користувач не знайдено в збережених даних');
+      return null;
+    } catch (e) {
+      print('❌ Помилка завантаження користувача: $e');
+      return null;
+    }
+  }
+
+  // Перевірка, чи залогінений користувач
+  Future<bool> isLoggedIn() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getBool(_isLoggedInKey) ?? false;
+    } catch (e) {
+      print('❌ Помилка перевірки статусу входу: $e');
+      return false;
+    }
+  }
+
+  // Видалення даних користувача
+  Future<void> clearUser() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_userKey);
+      await prefs.setBool(_isLoggedInKey, false);
+      print('✅ Дані користувача видалено');
+    } catch (e) {
+      print('❌ Помилка видалення даних: $e');
+    }
+  }
+
+  // Оновлення даних користувача
+  Future<void> updateUser(AppUser user) async {
+    await saveUser(user);
+  }
+}

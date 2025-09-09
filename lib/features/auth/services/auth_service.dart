@@ -1,4 +1,5 @@
 import 'package:donor_dashboard/data/models/app_user_model.dart';
+import 'package:donor_dashboard/core/services/storage_service.dart';
 import 'package:flutter/foundation.dart';
 
 class AuthService {
@@ -16,12 +17,15 @@ class AuthService {
 
   final ValueNotifier<AppUser?> currentUserNotifier = ValueNotifier(null);
   AppUser? _currentUser;
+  final StorageService _storageService = StorageService();
 
   // Цей метод викликається один раз при старті застосунку
-  void init() {
+  Future<void> init() async {
     debugPrint("🔍 Ініціалізуємо AuthService...");
     
-    // Перевіряємо, чи є залогінений користувач
+    // Завантажуємо користувача з збережених даних
+    _currentUser = await _storageService.loadUser();
+    
     if (_currentUser != null) {
       debugPrint("✅ Знайдено залогіненого користувача: ${_currentUser!.name}");
       currentUserNotifier.value = _currentUser;
@@ -59,9 +63,10 @@ class AuthService {
         email: email,
       );
 
-      // Зберігаємо користувача в пам'яті
+      // Зберігаємо користувача в пам'яті та в збереженнях
       _currentUser = newUser;
       currentUserNotifier.value = newUser;
+      await _storageService.saveUser(newUser);
       
       debugPrint("✅ Користувач успішно зареєстрований: ${newUser.id}");
       return null;
@@ -88,6 +93,7 @@ class AuthService {
 
       // Встановлюємо поточного користувача
       currentUserNotifier.value = _currentUser;
+      await _storageService.saveUser(_currentUser!);
       
       debugPrint("✅ Користувач успішно залогінений: ${_currentUser!.name}");
       return null; // Успішний логін
@@ -102,6 +108,7 @@ class AuthService {
     debugPrint("🔍 Вихід з системи...");
     _currentUser = null;
     currentUserNotifier.value = null;
+    await _storageService.clearUser();
     debugPrint("✅ Користувач вийшов з системи");
   }
 }

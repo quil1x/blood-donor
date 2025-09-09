@@ -1,5 +1,6 @@
 // Локальний сервіс автентифікації
 import 'package:donor_dashboard/data/models/app_user_model.dart';
+import 'package:donor_dashboard/core/services/storage_service.dart';
 import 'package:flutter/foundation.dart';
 
 class LocalAuthService extends ChangeNotifier {
@@ -15,15 +16,18 @@ class LocalAuthService extends ChangeNotifier {
   LocalAuthService._internal();
 
   AppUser? _currentUser;
+  final StorageService _storageService = StorageService();
   
   // Геттер для отримання поточного користувача
   AppUser? get currentUser => _currentUser;
 
   // Цей метод викликається один раз при старті застосунку
-  void init() {
+  Future<void> init() async {
     debugPrint("🔍 Ініціалізуємо локальний AuthService...");
     
-    // Перевіряємо, чи є залогінений користувач
+    // Завантажуємо користувача з збережених даних
+    _currentUser = await _storageService.loadUser();
+    
     if (_currentUser != null) {
       debugPrint("✅ Знайдено залогіненого користувача: ${_currentUser!.name}");
     } else {
@@ -64,8 +68,9 @@ class LocalAuthService extends ChangeNotifier {
         email: email,
       );
 
-      // Зберігаємо користувача в пам'яті
+      // Зберігаємо користувача в пам'яті та в збереженнях
       _currentUser = newUser;
+      await _storageService.saveUser(newUser);
       
       debugPrint("✅ Користувач успішно зареєстрований: ${newUser.id}");
       notifyListeners();
@@ -97,6 +102,7 @@ class LocalAuthService extends ChangeNotifier {
       }
 
       // Встановлюємо поточного користувача
+      await _storageService.saveUser(_currentUser!);
       notifyListeners();
       
       debugPrint("✅ Користувач успішно залогінений: ${_currentUser!.name}");
@@ -111,6 +117,7 @@ class LocalAuthService extends ChangeNotifier {
   Future<void> logout() async {
     debugPrint("🔍 Вихід з системи...");
     _currentUser = null;
+    await _storageService.clearUser();
     notifyListeners();
     debugPrint("✅ Користувач вийшов з системи");
   }
@@ -123,6 +130,7 @@ class LocalAuthService extends ChangeNotifier {
       debugPrint("📊 Нові дані: балів: ${user.totalPoints}, квестів: ${user.completedQuests.length}");
       
       _currentUser = user;
+      await _storageService.updateUser(user);
       
       debugPrint("🔄 Сповіщаємо слухачів про зміни...");
       notifyListeners();
