@@ -27,7 +27,7 @@ class StaticAuthService extends ChangeNotifier {
           .map((userJson) => AppUser.fromJson(userJson))
           .toList();
       
-      debugPrint("✅ Завантажено ${_users.length} користувачів");
+      debugPrint("✅ Завантажено ${_users.length} статичних користувачів");
     } catch (e) {
       debugPrint("❌ Помилка завантаження користувачів: $e");
     }
@@ -36,6 +36,11 @@ class StaticAuthService extends ChangeNotifier {
     _currentUser = await _storageService.loadUser();
     if (_currentUser != null) {
       debugPrint("✅ Знайдено збереженого користувача: ${_currentUser!.name}");
+      // Додаємо збереженого користувача до списку, якщо його там немає
+      if (!_users.any((u) => u.id == _currentUser!.id)) {
+        _users.add(_currentUser!);
+        debugPrint("✅ Додано збереженого користувача до списку");
+      }
     } else {
       debugPrint("ℹ️ Збереженого користувача не знайдено");
     }
@@ -50,10 +55,28 @@ class StaticAuthService extends ChangeNotifier {
     try {
       debugPrint("🔍 Пошук користувача: $email");
       
-      final user = _users.firstWhere(
-        (user) => user.email == email && user.password == password,
-        orElse: () => throw Exception("Користувач не знайдено"),
-      );
+      // Спочатку шукаємо в статичному списку
+      AppUser? user;
+      try {
+        user = _users.firstWhere(
+          (user) => user.email == email && user.password == password,
+        );
+      } catch (e) {
+        // Якщо не знайшли в статичному списку, шукаємо в збережених даних
+        debugPrint("🔍 Користувач не знайдений в статичному списку, шукаємо в збережених даних...");
+        final savedUser = await _storageService.loadUser();
+        if (savedUser != null && savedUser.email == email && savedUser.password == password) {
+          user = savedUser;
+          // Додаємо користувача до статичного списку, якщо його там немає
+          if (!_users.any((u) => u.id == user!.id)) {
+            _users.add(user);
+          }
+        }
+      }
+      
+      if (user == null) {
+        throw Exception("Користувач не знайдено");
+      }
       
       _currentUser = user;
       await _storageService.saveUser(user);
