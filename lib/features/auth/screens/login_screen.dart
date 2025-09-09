@@ -65,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 top: -100,
                 left: -100,
                 child: CircleShape(
-                    color: AppColors.greenAccent.withOpacity(0.1), size: 300)),
+                    color: AppColors.greenAccent.withValues(alpha: 0.1), size: 300)),
             Positioned(
                 bottom: -150,
                 right: -150,
