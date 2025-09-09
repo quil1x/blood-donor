@@ -4,6 +4,7 @@ class AppUser {
   final String id;
   final String name;
   final String email;
+  final String password;
   int totalDonations;
   int livesSaved;
   int totalPoints;
@@ -13,6 +14,7 @@ class AppUser {
     required this.id,
     required this.name,
     required this.email,
+    required this.password,
     this.totalDonations = 0,
     this.livesSaved = 0,
     this.totalPoints = 100,
@@ -24,6 +26,7 @@ class AppUser {
       'id': id,
       'name': name,
       'email': email,
+      'password': password,
       'total_donations': totalDonations,
       'lives_saved': livesSaved,
       'total_points': totalPoints,
@@ -37,6 +40,7 @@ class AppUser {
       id: json['id'] ?? '',
       name: json['name'] ?? '',
       email: json['email'] ?? '',
+      password: json['password'] ?? '',
       totalDonations: json['total_donations'] ?? 0,
       livesSaved: json['lives_saved'] ?? 0,
       totalPoints: json['total_points'] ?? 0,

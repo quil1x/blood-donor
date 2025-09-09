@@ -41,7 +41,7 @@ class StaticAuthService extends ChangeNotifier {
       debugPrint("🔍 Пошук користувача: $email");
       
       final user = _users.firstWhere(
-        (user) => user.email == email && password == "123456",
+        (user) => user.email == email && user.password == password,
         orElse: () => throw Exception("Користувач не знайдено"),
       );
       
@@ -52,7 +52,51 @@ class StaticAuthService extends ChangeNotifier {
       return null;
     } catch (e) {
       debugPrint("❌ Помилка входу: $e");
-      return 'Неправильний email або пароль. Використовуйте test1@example.com - test5@example.com з паролем 123456';
+      return 'Неправильний email або пароль.';
+    }
+  }
+
+  Future<String?> register({
+    required String name,
+    required String email,
+    required String password,
+  }) async {
+    try {
+      debugPrint("🔍 Реєстрація користувача: $email");
+      
+      // Перевіряємо, чи не існує користувач з таким email
+      if (_users.any((user) => user.email == email)) {
+        return 'Акаунт з таким email вже існує.';
+      }
+
+      // Валідація пароля
+      if (password.length < 6) {
+        return 'Пароль занадто слабкий.';
+      }
+
+      // Валідація email
+      if (!email.contains('@') || !email.contains('.')) {
+        return 'Неправильний формат email.';
+      }
+
+      // Створюємо нового користувача
+      final newUser = AppUser(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        name: name,
+        email: email,
+        password: password,
+      );
+
+      // Додаємо користувача до списку
+      _users.add(newUser);
+      _currentUser = newUser;
+      notifyListeners();
+      
+      debugPrint("✅ Користувач успішно зареєстрований: ${newUser.name}");
+      return null;
+    } catch (e) {
+      debugPrint("❌ Помилка реєстрації: $e");
+      return 'Виникла помилка реєстрації.';
     }
   }
 
