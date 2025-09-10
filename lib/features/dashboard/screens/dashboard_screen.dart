@@ -115,7 +115,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: AppColors.blueAccent.withValues(alpha: 0.1),
+            color: AppColors.blueAccent.withOpacity(0.1),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Text(
@@ -196,7 +196,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Container(
                   padding: EdgeInsets.all(isMobile ? 6 : 8),
                   decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.1),
+                    color: color.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(icon, color: color, size: isMobile ? 16 : 24),
@@ -812,7 +812,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: AppColors.blueAccent.withValues(alpha: 0.1),
+                  color: AppColors.blueAccent.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(

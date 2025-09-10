@@ -36,7 +36,7 @@ class ProfileQuestCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
+              color: Colors.black.withOpacity(0.05),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -50,7 +50,7 @@ class ProfileQuestCard extends StatelessWidget {
               height: isDesktop ? 50 : 40,
               decoration: BoxDecoration(
                 color: isCompleted 
-                    ? AppColors.blueAccent.withValues(alpha: 0.1)
+                    ? AppColors.blueAccent.withOpacity(0.1)
                     : AppColors.lightBackground,
                 borderRadius: BorderRadius.circular(isDesktop ? 25 : 20),
               ),

@@ -110,7 +110,7 @@ class ProfileActionButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(50),
           boxShadow: [
             BoxShadow(
-              color: backgroundColor.withValues(alpha: 0.3),
+              color: backgroundColor.withOpacity(0.3),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),

@@ -28,7 +28,7 @@ class ProfileAccentCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: backgroundColor.withValues(alpha: 0.3),
+            color: backgroundColor.withOpacity(0.3),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -69,7 +69,7 @@ class ProfileAccentCard extends StatelessWidget {
             subtitle,
             style: TextStyle(
               fontSize: 12,
-              color: textColor.withValues(alpha: 0.7),
+              color: textColor.withOpacity(0.7),
             ),
           ),
         ],
