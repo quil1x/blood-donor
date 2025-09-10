@@ -1,6 +1,6 @@
-import 'package:donor_dashboard/core/theme/app_colors.dart';
 import 'package:donor_dashboard/data/mock_data.dart';
-import 'package:donor_dashboard/core/services/static_auth_service.dart';
+import 'package:donor_dashboard/data/models/blood_center_model.dart';
+import 'package:donor_dashboard/core/widgets/book_visit_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -10,39 +10,17 @@ class BloodCentersScreen extends StatelessWidget {
   final VoidCallback onUpdate;
   const BloodCentersScreen({super.key, required this.onUpdate});
 
-  Future<void> _completeVisitQuest(BuildContext context) async {
-    final authService = StaticAuthService();
-    final currentUser = authService.currentUser;
-    const questId = "visit_blood_center";
-
-    if (currentUser != null &&
-        !currentUser.completedQuests.containsKey(questId)) {
-      currentUser.completedQuests[questId] = DateTime.now();
-      currentUser.totalPoints += 150;
-      
-      final success = await authService.updateUserProfile(currentUser);
-      if (success) {
-        onUpdate();
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Квест "Розвідник" виконано! +150 XP'),
-            backgroundColor: AppColors.greenAccent,
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Помилка оновлення профілю'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Ви вже виконували цей квест.')),
-      );
-    }
+  void _bookVisit(BuildContext context, BloodCenterModel center) {
+    showDialog(
+      context: context,
+      builder: (context) => BookVisitDialog(
+        bloodCenter: center,
+        onBooked: () {
+          // Оновлюємо дані після успішного запису
+          onUpdate();
+        },
+      ),
+    );
   }
 
   @override
@@ -107,7 +85,7 @@ class BloodCentersScreen extends StatelessWidget {
                         Align(
                           alignment: Alignment.centerRight,
                           child: ElevatedButton.icon(
-                            onPressed: () => _completeVisitQuest(context),
+                            onPressed: () => _bookVisit(context, center),
                             icon: const Icon(CupertinoIcons.calendar_badge_plus,
                                 size: 20),
                             label: const Text('Запланувати візит'),

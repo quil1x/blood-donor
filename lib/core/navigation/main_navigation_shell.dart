@@ -36,11 +36,14 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
     // ✅ ОСНОВНЕ ВИПРАВЛЕННЯ:
     // Тепер `onUpdate` передається до ВСІХ екранів, які його потребують.
     _screens = [
-      DashboardScreen(onUpdate: refreshData),
+      const DashboardScreen(),
       BloodCentersScreen(onUpdate: refreshData), // <-- Додано
       QuestsScreen(onUpdate: refreshData),
       RewardsStoreScreen(onUpdate: refreshData), // <-- Додано
-      ProfileScreen(onUpdate: refreshData),
+      ProfileScreen(
+        onUpdate: refreshData,
+        onTabChanged: (index) => _onItemTapped(index),
+      ),
     ];
   }
 

@@ -28,7 +28,7 @@ class ChallengeCard extends StatelessWidget {
               children: [
                 Icon(quest.icon,
                     color: isCompleted
-                        ? AppColors.greenAccent
+                        ? AppColors.blueAccent
                         : theme.primaryColor,
                     size: 28),
                 const SizedBox(width: 12),
@@ -46,7 +46,7 @@ class ChallengeCard extends StatelessWidget {
                   '+${quest.rewardPoints} XP',
                   style: TextStyle(
                     color: isCompleted
-                        ? AppColors.greenAccent
+                        ? AppColors.blueAccent
                         : theme.primaryColor,
                     fontWeight: FontWeight.bold,
                   ),
@@ -61,7 +61,7 @@ class ChallengeCard extends StatelessWidget {
                 minHeight: 8,
                 backgroundColor: theme.scaffoldBackgroundColor,
                 valueColor: AlwaysStoppedAnimation<Color>(
-                  isCompleted ? AppColors.greenAccent : theme.primaryColor,
+                  isCompleted ? AppColors.blueAccent : theme.primaryColor,
                 ),
               ),
             ),

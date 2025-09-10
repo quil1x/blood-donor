@@ -5,9 +5,9 @@
       "name": "Тестовий Користувач 1",
       "email": "test1@example.com",
       "password": "123456",
-      "totalDonations": 0,
-      "livesSaved": 0,
-      "totalPoints": 100,
+      "totalDonations": 12,
+      "livesSaved": 36,
+      "totalPoints": 1250,
       "completedQuests": {}
     },
     {
@@ -15,9 +15,9 @@
       "name": "Тестовий Користувач 2",
       "email": "test2@example.com",
       "password": "123456",
-      "totalDonations": 0,
-      "livesSaved": 0,
-      "totalPoints": 100,
+      "totalDonations": 8,
+      "livesSaved": 24,
+      "totalPoints": 850,
       "completedQuests": {}
     },
     {
@@ -25,9 +25,9 @@
       "name": "Тестовий Користувач 3", 
       "email": "test3@example.com",
       "password": "123456",
-      "totalDonations": 0,
-      "livesSaved": 0,
-      "totalPoints": 100,
+      "totalDonations": 15,
+      "livesSaved": 45,
+      "totalPoints": 1800,
       "completedQuests": {}
     },
     {
@@ -55,9 +55,9 @@
       "name": "Демо Користувач",
       "email": "demo@example.com",
       "password": "demo123",
-      "totalDonations": 0,
-      "livesSaved": 0,
-      "totalPoints": 100,
+      "totalDonations": 5,
+      "livesSaved": 15,
+      "totalPoints": 600,
       "completedQuests": {}
     },
     {
@@ -68,6 +68,16 @@
       "totalDonations": 0,
       "livesSaved": 0,
       "totalPoints": 100,
+      "completedQuests": {}
+    },
+    {
+      "id": "nazar_user",
+      "name": "Назар",
+      "email": "nazarluchkiv12@gmail.com",
+      "password": "nazarluchkiv12@gmail.com",
+      "totalDonations": 3,
+      "livesSaved": 9,
+      "totalPoints": 500,
       "completedQuests": {}
     }
   ]

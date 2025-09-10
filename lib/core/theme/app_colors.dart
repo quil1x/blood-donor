@@ -9,15 +9,12 @@ class AppColors {
   static const Color lightBorder = Color(0xFFE2E8F0);
 
   // Акцентні кольори
-  static const Color greenAccent = Color(0xFF3FB950); // Основний зелений
-  static const Color blueAccent = Color(0xFF58A6FF); // Синій для темної теми
+  static const Color blueAccent = Color(0xFF3B82F6); // Основний синій
   static const Color pinkAccent = Color(0xFFDB61A2);
   static const Color shadow = Color(0x1A000000);
   
-  // Темна тема
-  static const Color darkBackground = Color(0xFF0D1117);
-  static const Color darkCard = Color(0xFF161B22);
-  static const Color darkBorder = Color(0xFF30363D);
-  static const Color darkTextPrimary = Color(0xFFC9D1D9);
-  static const Color darkTextSecondary = Color(0xFF8B949E);
+  // Додаткові кольори для дашборду
+  static const Color lightBlue = Color(0xFF60A5FA);
+  static const Color lightGrey = Color(0xFFF8FAFC);
+  static const Color mediumGrey = Color(0xFF64748B);
 }

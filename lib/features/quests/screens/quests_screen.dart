@@ -51,7 +51,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
           SnackBar(
             content: Text(
                 'Квест "${quest.title}" виконано! +${quest.rewardPoints} XP'),
-            backgroundColor: AppColors.greenAccent,
+            backgroundColor: AppColors.blueAccent,
           ),
         );
       } else {

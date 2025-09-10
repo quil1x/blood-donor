@@ -16,12 +16,4 @@ class AppTextStyles {
   );
 
   // Стилі для темної теми
-  static final dark = TextTheme(
-    displayLarge: _baseFont(fontSize: 34, fontWeight: FontWeight.bold, color: AppColors.darkTextPrimary, letterSpacing: -0.5),
-    headlineMedium: _baseFont(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.darkTextPrimary),
-    titleLarge: _baseFont(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.darkTextPrimary),
-    bodyLarge: _baseFont(fontSize: 16, color: AppColors.darkTextPrimary),
-    bodyMedium: _baseFont(fontSize: 14, color: AppColors.darkTextSecondary),
-    labelLarge: _baseFont(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.darkBackground),
-  );
 }

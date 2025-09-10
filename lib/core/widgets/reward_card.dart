@@ -42,7 +42,7 @@ class RewardCard extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 36),
                 backgroundColor:
-                    canAfford ? AppColors.greenAccent : Colors.grey,
+                    canAfford ? AppColors.blueAccent : Colors.grey,
               ),
               child: Text('${reward.cost} балів'),
             )

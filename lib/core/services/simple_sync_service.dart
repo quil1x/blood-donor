@@ -1,10 +1,8 @@
-import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:donor_dashboard/data/models/app_user_model.dart';
 
 class SimpleSyncService {
   // Простий спосіб синхронізації через localStorage
-  static const String _usersKey = 'synced_users';
   
   // Отримати всіх користувачів
   Future<List<AppUser>> getUsers() async {

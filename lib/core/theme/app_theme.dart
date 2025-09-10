@@ -7,10 +7,10 @@ class AppTheme {
   static final lightTheme = ThemeData(
     brightness: Brightness.light,
     scaffoldBackgroundColor: AppColors.lightBackground,
-    primaryColor: AppColors.greenAccent, // Основний колір - зелений
+    primaryColor: AppColors.blueAccent, // Основний колір - синій
     textTheme: AppTextStyles.light,
     colorScheme: const ColorScheme.light(
-      primary: AppColors.greenAccent,
+      primary: AppColors.blueAccent,
       secondary: AppColors.pinkAccent,
       surface: AppColors.lightBackground,
       onSurface: AppColors.lightCard,
@@ -22,7 +22,7 @@ class AppTheme {
       titleTextStyle: AppTextStyles.light.headlineMedium,
     ),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      selectedItemColor: AppColors.greenAccent,
+      selectedItemColor: AppColors.blueAccent,
       unselectedItemColor: AppColors.lightTextSecondary,
       backgroundColor: AppColors.lightCard,
       elevation: 0,
@@ -31,14 +31,14 @@ class AppTheme {
     navigationRailTheme: const NavigationRailThemeData(
       backgroundColor: AppColors.lightBackground,
       indicatorColor: Colors.transparent,
-      selectedIconTheme: IconThemeData(color: AppColors.greenAccent),
+      selectedIconTheme: IconThemeData(color: AppColors.blueAccent),
       unselectedIconTheme: IconThemeData(color: AppColors.lightTextSecondary),
-      selectedLabelTextStyle: TextStyle(color: AppColors.greenAccent),
+      selectedLabelTextStyle: TextStyle(color: AppColors.blueAccent),
       unselectedLabelTextStyle: TextStyle(color: AppColors.lightTextSecondary),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.greenAccent,
+        backgroundColor: AppColors.blueAccent,
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -47,45 +47,4 @@ class AppTheme {
     ),
   );
 
-  // Темна тема
-  static final darkTheme = ThemeData(
-    brightness: Brightness.dark,
-    scaffoldBackgroundColor: AppColors.darkBackground,
-    primaryColor: AppColors.blueAccent, // Основний колір - синій
-    textTheme: AppTextStyles.dark,
-    colorScheme: const ColorScheme.dark(
-      primary: AppColors.blueAccent,
-      secondary: AppColors.greenAccent,
-      surface: AppColors.darkBackground,
-      onSurface: AppColors.darkCard,
-    ),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: AppColors.darkBackground,
-      elevation: 0,
-      iconTheme: IconThemeData(color: AppColors.darkTextPrimary),
-    ),
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      selectedItemColor: AppColors.blueAccent,
-      unselectedItemColor: AppColors.darkTextSecondary,
-      backgroundColor: AppColors.darkBackground,
-      type: BottomNavigationBarType.fixed,
-      elevation: 0,
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-      backgroundColor: AppColors.blueAccent,
-      foregroundColor: AppColors.darkBackground,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      textStyle: AppTextStyles.dark.labelLarge,
-    )),
-    navigationRailTheme: const NavigationRailThemeData(
-      backgroundColor: AppColors.darkBackground,
-      indicatorColor: Colors.transparent,
-      selectedIconTheme: IconThemeData(color: AppColors.blueAccent),
-      unselectedIconTheme: IconThemeData(color: AppColors.darkTextSecondary),
-      selectedLabelTextStyle: TextStyle(color: AppColors.blueAccent),
-      unselectedLabelTextStyle: TextStyle(color: AppColors.darkTextSecondary),
-    ),
-  );
 }
