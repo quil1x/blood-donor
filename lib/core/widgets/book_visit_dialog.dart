@@ -271,7 +271,7 @@ class _BookVisitDialogState extends State<BookVisitDialog> {
               
               // Група крові
               DropdownButtonFormField<String>(
-                initialValue: _selectedBloodType,
+                value: _selectedBloodType,
                 style: const TextStyle(color: AppColors.lightTextPrimary),
                 decoration: InputDecoration(
                   labelText: 'Група крові',

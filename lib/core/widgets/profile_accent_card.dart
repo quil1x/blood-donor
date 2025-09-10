@@ -44,7 +44,7 @@ class ProfileAccentCard extends StatelessWidget {
                 title,
                 style: TextStyle(
                   fontSize: 14,
-                  color: textColor.withValues(alpha:  0.8),
+                  color: textColor.withOpacity(0.8),
                   fontWeight: FontWeight.w500,
                 ),
               ),
