@@ -65,12 +65,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 top: -100,
                 left: -100,
                 child: CircleShape(
-                    color: AppColors.blueAccent.withValues(alpha: 0.1), size: 300)),
+                    color: AppColors.blueAccent.withOpacity(0.1), size: 300)),
             Positioned(
                 bottom: -150,
                 right: -150,
                 child: CircleShape(
-                    color: AppColors.pinkAccent.withValues(alpha: 0.05), size: 400)),
+                    color: AppColors.pinkAccent.withOpacity(0.05), size: 400)),
             Center(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -93,9 +93,9 @@ class _LoginScreenState extends State<LoginScreen> {
           constraints: const BoxConstraints(maxWidth: 400),
           padding: const EdgeInsets.all(24.0),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.6),
+            color: Colors.white.withOpacity(0.6),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+            border: Border.all(color: Colors.white.withOpacity(0.2)),
           ),
           child: Form(
             key: _formKey,
@@ -184,11 +184,11 @@ class _LoginScreenState extends State<LoginScreen> {
       // >>> ПОЧАТОК ЗМІН (колір тексту підказки) <<<
       labelStyle: const TextStyle(color: AppColors.lightTextSecondary),
       hintStyle:
-          TextStyle(color: AppColors.lightTextSecondary.withValues(alpha: 0.7)),
+          TextStyle(color: AppColors.lightTextSecondary.withOpacity(0.7)),
       // >>> КІНЕЦЬ ЗМІН <<<
       prefixIcon: Icon(icon, color: AppColors.lightTextSecondary),
       filled: true,
-      fillColor: AppColors.lightBackground.withValues(alpha: 0.8),
+      fillColor: AppColors.lightBackground.withOpacity(0.8),
       border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
     );
