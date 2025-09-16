@@ -12,6 +12,12 @@
 .swiftpm/
 migrate_working_dir/
 
+# Temporary files
+tatus
+status
+temp
+*.tmp
+
 # IntelliJ related
 *.iml
 *.ipr
