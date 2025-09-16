@@ -4,14 +4,14 @@ import 'package:http/http.dart' as http;
 import 'package:donor_dashboard/data/models/app_user_model.dart';
 
 class GitHubGistService {
-  // ID вашого Gist (потрібно створити на GitHub)
+  
   static const String gistId = 'YOUR_GIST_ID_HERE';
-  static const String githubToken = 'YOUR_GITHUB_TOKEN_HERE'; // Опціонально
+  static const String githubToken = 'YOUR_GITHUB_TOKEN_HERE'; 
   
-  // URL для отримання Gist
-  String get gistUrl => 'https://api.github.com/gists/$gistId';
   
-  // Отримати всіх користувачів з Gist
+  String get gistUrl => 'https://api.github.com/gists/your-gist-id';
+  
+  
   Future<List<AppUser>> getUsers() async {
     try {
       debugPrint('🔍 Завантажуємо користувачів з GitHub Gist...');
@@ -51,7 +51,7 @@ class GitHubGistService {
     return [];
   }
   
-  // Зберегти користувачів в Gist
+  
   Future<bool> saveUsers(List<AppUser> users) async {
     try {
       debugPrint('💾 Зберігаємо користувачів в GitHub Gist...');
@@ -90,14 +90,14 @@ class GitHubGistService {
     }
   }
   
-  // Додати нового користувача
+  
   Future<bool> addUser(AppUser user) async {
     final users = await getUsers();
     users.add(user);
     return await saveUsers(users);
   }
   
-  // Оновити користувача
+  
   Future<bool> updateUser(AppUser user) async {
     final users = await getUsers();
     final index = users.indexWhere((u) => u.id == user.id);

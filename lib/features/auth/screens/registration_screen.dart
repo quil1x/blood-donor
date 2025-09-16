@@ -126,12 +126,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 const SizedBox(height: 32),
                 TextFormField(
                   controller: _nameController,
-                  // >>> ПОЧАТОК ЗМІН <<<
                   style: const TextStyle(
-                      color: Colors.black), // Текст вводу чорний
+                      color: Colors.black),
                   decoration:
                       _inputDecoration('Повне ім\'я', Icons.person_outline),
-                  // >>> КІНЕЦЬ ЗМІН <<<
                   validator: (value) => (value == null || value.isEmpty)
                       ? 'Введіть ваше ім\'я'
                       : null,
@@ -139,12 +137,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _emailController,
-                  // >>> ПОЧАТОК ЗМІН <<<
                   style: const TextStyle(
-                      color: Colors.black), // Текст вводу чорний
+                      color: Colors.black),
                   decoration: _inputDecoration(
                       'Електронна пошта', Icons.email_outlined),
-                  // >>> КІНЕЦЬ ЗМІН <<<
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) => (value == null || !value.contains('@'))
                       ? 'Введіть коректний email'
@@ -154,12 +150,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 TextFormField(
                   controller: _passwordController,
                   obscureText: true,
-                  // >>> ПОЧАТОК ЗМІН <<<
                   style: const TextStyle(
-                      color: Colors.black), // Текст вводу чорний
+                      color: Colors.black),
                   decoration: _inputDecoration(
                       'Пароль (мін. 6 символів)', Icons.lock_outline),
-                  // >>> КІНЕЦЬ ЗМІН <<<
                   validator: (value) => (value == null || value.length < 6)
                       ? 'Пароль занадто короткий'
                       : null,
@@ -198,11 +192,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   InputDecoration _inputDecoration(String label, IconData icon) {
     return InputDecoration(
       labelText: label,
-      // >>> ПОЧАТОК ЗМІН (колір тексту підказки) <<<
       labelStyle: const TextStyle(color: AppColors.lightTextSecondary),
       hintStyle:
           TextStyle(color: AppColors.lightTextSecondary.withOpacity(0.7)),
-      // >>> КІНЕЦЬ ЗМІН <<<
       prefixIcon: Icon(icon, color: AppColors.lightTextSecondary),
       filled: true,
       fillColor: AppColors.lightBackground.withOpacity(0.8),

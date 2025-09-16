@@ -13,9 +13,9 @@ class BloodCenterService {
   List<BloodCenterModel> get userBloodCenters => _userBloodCenters;
 
   Future<void> init() async {
-    // Завантажуємо всі центри крові
+    
     _bloodCenters = mockBloodCenters;
-    // Поки що порожній список користувацьких центрів
+    
     _userBloodCenters = [];
   }
 

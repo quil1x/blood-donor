@@ -37,7 +37,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _loadBloodCenters() async {
     await _bloodCenterService.init();
     setState(() {
-      // Показуємо більше центрів крові
       _bloodCenters = _bloodCenterService.bloodCenters.take(6).toList();
     });
   }
@@ -45,7 +44,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void didUpdateWidget(ProfileScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Оновлюємо стан коли змінюється onUpdate callback
     if (oldWidget.onUpdate != widget.onUpdate) {
       setState(() {});
     }
@@ -207,16 +205,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          // Профільний заголовок
           _buildProfileHeader(user),
           
-          // Картки статистики
           _buildStatsSection(user, isDesktop),
           
-          // Секція центрів крові
           _buildBloodCentersSection(),
           
-          // Секція квестів
           _buildQuestsSection(user),
         ],
       ),
@@ -321,7 +315,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       title: 'Центри крові',
       actionText: 'Всі',
       onAction: () {
-        // Перемикаємо на вкладку центів крові (індекс 1)
+        
         if (widget.onTabChanged != null) {
           widget.onTabChanged!(1);
         }
@@ -344,7 +338,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       builder: (context) => BookVisitDialog(
         bloodCenter: center,
         onBooked: () {
-          // Оновлюємо дані після успішного запису
+          
           widget.onUpdate();
         },
       ),
@@ -372,7 +366,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           title: 'Активні квести',
           actionText: 'Всі',
           onAction: () {
-            // Перемикаємо на вкладку квестів (індекс 2)
+            
             if (widget.onTabChanged != null) {
               widget.onTabChanged!(2);
             }
@@ -384,7 +378,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               icon: quest.icon,
               isCompleted: false,
               onTap: () {
-                // Виконати квест
+                
               },
             ),
           ).toList(),

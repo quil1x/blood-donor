@@ -18,28 +18,22 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
   int _selectedIndex = 0;
   final StaticAuthService _authService = StaticAuthService();
 
-  // Створюємо список віджетів всередині initState, щоб передати реальний метод.
   late final List<Widget> _screens;
 
   @override
   void initState() {
     super.initState();
 
-    // Цей метод буде викликатися з дочірніх екранів для оновлення стану
     void refreshData() {
       setState(() {
-        // Пустий setState змусить цей віджет і всі дочірні екрани
-        // завантажити свіжі дані з сервісів (наприклад, AuthService).
       });
     }
 
-    // ✅ ОСНОВНЕ ВИПРАВЛЕННЯ:
-    // Тепер `onUpdate` передається до ВСІХ екранів, які його потребують.
     _screens = [
       const DashboardScreen(),
-      BloodCentersScreen(onUpdate: refreshData), // <-- Додано
+      BloodCentersScreen(onUpdate: refreshData),
       QuestsScreen(onUpdate: refreshData),
-      RewardsStoreScreen(onUpdate: refreshData), // <-- Додано
+      RewardsStoreScreen(onUpdate: refreshData),
       ProfileScreen(
         onUpdate: refreshData,
         onTabChanged: (index) => _onItemTapped(index),
@@ -61,7 +55,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
     return ListenableBuilder(
       listenable: _authService,
       builder: (context, child) {
-        // Код для мобільних пристроїв
+        
         if (width < breakpoint) {
           return Scaffold(
             body: IndexedStack(
@@ -86,7 +80,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
             ),
           );
         }
-        // Код для планшетів та вебу
+        
         else {
           return Scaffold(
             body: Row(

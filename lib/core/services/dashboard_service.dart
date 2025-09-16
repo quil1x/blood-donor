@@ -9,22 +9,19 @@ class DashboardService extends ChangeNotifier {
 
   final StaticAuthService _authService = StaticAuthService();
 
-  // Фіксовані дані для дашборду
   int _totalDonations = 8;
   int _livesSaved = 24;
   int _totalPoints = 750;
   int _availableDonations = 2;
 
-  // Геттери
   int get totalDonations => _totalDonations;
   int get livesSaved => _livesSaved;
   int get totalPoints => _totalPoints;
   int get availableDonations => _availableDonations;
 
-  // Методи для оновлення даних
   void updateDonations(int donations) {
     _totalDonations = donations;
-    _livesSaved = donations * 3; // Кожна донація рятує 3 життя
+    _livesSaved = donations * 3;
     notifyListeners();
   }
 
@@ -38,16 +35,14 @@ class DashboardService extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Метод для додавання донації
   void addDonation() {
     _totalDonations++;
     _livesSaved = _totalDonations * 3;
-    _totalPoints += 100; // За кожну донацію +100 балів
-    _availableDonations = 3 - (_totalDonations % 3); // Доступно донацій
+    _totalPoints += 100;
+    _availableDonations = 3 - (_totalDonations % 3);
     notifyListeners();
   }
 
-  // Метод для скидання даних
   void resetData() {
     _totalDonations = 0;
     _livesSaved = 0;
@@ -56,7 +51,6 @@ class DashboardService extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Метод для встановлення демо-даних
   void setDemoData() {
     _totalDonations = 8;
     _livesSaved = 24;
@@ -65,11 +59,9 @@ class DashboardService extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Отримання поточних даних як AppUser
   AppUser getCurrentData() {
     final currentUser = _authService.currentUser;
     if (currentUser != null) {
-      // Якщо є поточний користувач, використовуємо його дані
       return AppUser(
         id: currentUser.id,
         name: currentUser.name,
@@ -81,7 +73,6 @@ class DashboardService extends ChangeNotifier {
         completedQuests: currentUser.completedQuests,
       );
     } else {
-      // Якщо немає поточного користувача, використовуємо демо-дані
       return AppUser(
         id: 'dashboard',
         name: 'Демо Користувач',
@@ -95,7 +86,6 @@ class DashboardService extends ChangeNotifier {
     }
   }
 
-  // Синхронізація з поточним користувачем
   void syncWithCurrentUser() {
     final currentUser = _authService.currentUser;
     if (currentUser != null) {
@@ -107,7 +97,6 @@ class DashboardService extends ChangeNotifier {
     }
   }
 
-  // Оновлення даних користувача
   void updateUserData(AppUser user) {
     _totalDonations = user.totalDonations;
     _livesSaved = user.livesSaved;

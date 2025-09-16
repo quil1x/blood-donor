@@ -3,11 +3,11 @@ import 'package:donor_dashboard/core/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  // Оновлена світла тема
+  
   static final lightTheme = ThemeData(
     brightness: Brightness.light,
     scaffoldBackgroundColor: AppColors.lightBackground,
-    primaryColor: AppColors.blueAccent, // Основний колір - синій
+    primaryColor: AppColors.blueAccent, 
     textTheme: AppTextStyles.light,
     colorScheme: const ColorScheme.light(
       primary: AppColors.blueAccent,

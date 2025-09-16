@@ -1,4 +1,4 @@
-// lib/data/models/quest_model.dart
+
 
 import 'package:flutter/cupertino.dart';
 
@@ -7,7 +7,7 @@ class QuestModel {
   final String title;
   final String description;
   final int rewardPoints;
-  final String iconName; // Зберігаємо назву іконки замість IconData
+  final String iconName; 
 
   QuestModel({
     required this.id,
@@ -17,7 +17,7 @@ class QuestModel {
     required this.iconName,
   });
 
-  // Геттер для отримання IconData
+  
   IconData get icon {
     switch (iconName) {
       case 'drop_fill':

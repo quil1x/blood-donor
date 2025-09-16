@@ -1,4 +1,4 @@
-// lib/data/models/app_user_model.dart
+
 
 class AppUser {
   final String id;

@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTextStyles {
   static const _baseFont = GoogleFonts.inter;
 
-  // Оновлені стилі для світлої теми
+  
   static final light = TextTheme(
     displayLarge: _baseFont(fontSize: 34, fontWeight: FontWeight.bold, color: AppColors.lightTextPrimary, letterSpacing: -0.5),
     headlineMedium: _baseFont(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.lightTextPrimary),
@@ -15,5 +15,5 @@ class AppTextStyles {
     labelLarge: _baseFont(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
   );
 
-  // Стилі для темної теми
+  
 }

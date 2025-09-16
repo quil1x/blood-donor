@@ -16,7 +16,7 @@ class BloodCentersScreen extends StatelessWidget {
       builder: (context) => BookVisitDialog(
         bloodCenter: center,
         onBooked: () {
-          // Оновлюємо дані після успішного запису
+          
           onUpdate();
         },
       ),

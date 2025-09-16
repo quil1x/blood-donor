@@ -20,8 +20,6 @@ class StaticAuthService extends ChangeNotifier {
 
   Future<void> init() async {
     debugPrint("🔍 Завантажуємо користувачів...");
-    
-    // Завантажуємо з локального файлу
     try {
       final String jsonString = await rootBundle.loadString('lib/data/static_users.json');
       final Map<String, dynamic> jsonData = jsonDecode(jsonString);
@@ -34,18 +32,13 @@ class StaticAuthService extends ChangeNotifier {
       for (final user in _users) {
         debugPrint("👤 Користувач: ${user.name} (${user.email})");
       }
-      
-      // Синхронізуємо з сервісом
       await _syncService.saveUsers(_users);
     } catch (e) {
       debugPrint("❌ Помилка завантаження користувачів: $e");
     }
-    
-    // Завантажуємо збереженого користувача
     _currentUser = await _storageService.loadUser();
     if (_currentUser != null) {
       debugPrint("✅ Знайдено збереженого користувача: ${_currentUser!.name}");
-      // Додаємо збереженого користувача до списку, якщо його там немає
       if (!_users.any((u) => u.id == _currentUser!.id)) {
         _users.add(_currentUser!);
         debugPrint("✅ Додано збереженого користувача до списку");
@@ -67,8 +60,6 @@ class StaticAuthService extends ChangeNotifier {
       for (final u in _users) {
         debugPrint("👤 ${u.email} (${u.password})");
       }
-      
-      // Спочатку шукаємо в статичному списку
       AppUser? user;
       try {
         user = _users.firstWhere(
@@ -76,18 +67,14 @@ class StaticAuthService extends ChangeNotifier {
         );
         debugPrint("✅ Знайдено користувача в статичному списку: ${user.name}");
       } catch (e) {
-        // Якщо не знайшли в статичному списку, шукаємо в збережених даних
         debugPrint("🔍 Користувач не знайдений в статичному списку, шукаємо в збережених даних...");
         final savedUser = await _storageService.loadUser();
         if (savedUser != null && savedUser.email == email && savedUser.password == password) {
           user = savedUser;
-          // Додаємо користувача до статичного списку, якщо його там немає
           if (!_users.any((u) => u.id == user!.id)) {
             _users.add(user);
           }
         } else {
-          // Якщо не знайшли в збережених даних, спробуємо знайти в інших можливих місцях
-          // Це може бути користувач, який реєструвався на іншому пристрої
           debugPrint("🔍 Користувач не знайдений в збережених даних, можливо він реєструвався на іншому пристрої");
         }
       }
@@ -116,22 +103,18 @@ class StaticAuthService extends ChangeNotifier {
     try {
       debugPrint("🔍 Реєстрація користувача: $email");
       
-      // Перевіряємо, чи не існує користувач з таким email
       if (_users.any((user) => user.email == email)) {
         return 'Акаунт з таким email вже існує.';
       }
 
-      // Валідація пароля
       if (password.length < 6) {
         return 'Пароль занадто слабкий.';
       }
 
-      // Валідація email
       if (!email.contains('@') || !email.contains('.')) {
         return 'Неправильний формат email.';
       }
 
-      // Створюємо нового користувача
       final newUser = AppUser(
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         name: name,
@@ -139,12 +122,10 @@ class StaticAuthService extends ChangeNotifier {
         password: password,
       );
 
-      // Додаємо користувача до списку в пам'яті
       _users.add(newUser);
       _currentUser = newUser;
       await _storageService.saveUser(newUser);
       
-      // Синхронізуємо з сервісом
       final success = await _syncService.addUser(newUser);
       if (success) {
         debugPrint("✅ Користувач синхронізований");
@@ -181,7 +162,6 @@ class StaticAuthService extends ChangeNotifier {
         _currentUser = user;
         await _storageService.updateUser(user);
         
-        // Синхронізуємо з сервісом
         final success = await _syncService.updateUser(user);
         if (success) {
           debugPrint("✅ Профіль синхронізований");
@@ -202,10 +182,8 @@ class StaticAuthService extends ChangeNotifier {
     }
   }
 
-  // Отримання списку всіх користувачів для тестування
   List<AppUser> getAllUsers() => List.from(_users);
   
-  // Отримання поточного користувача
   AppUser? getCurrentUser() => _currentUser;
   
 }

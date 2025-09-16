@@ -67,7 +67,7 @@ class LineChartPainter extends CustomPainter {
       textDirection: TextDirection.ltr,
     );
 
-    // Draw grid lines
+    
     final gridPaint = Paint()
       ..color = AppColors.lightBorder
       ..strokeWidth = 0.5;
@@ -81,7 +81,7 @@ class LineChartPainter extends CustomPainter {
       );
     }
 
-    // Draw data line
+    
     final points = <Offset>[];
     for (int i = 0; i < data.length; i++) {
       final x = size.width * i / (data.length - 1);
@@ -90,17 +90,17 @@ class LineChartPainter extends CustomPainter {
       points.add(Offset(x, y));
     }
 
-    // Draw line
+    
     for (int i = 0; i < points.length - 1; i++) {
       canvas.drawLine(points[i], points[i + 1], paint);
     }
 
-    // Draw points
+    
     for (final point in points) {
       canvas.drawCircle(point, 4, pointPaint);
     }
 
-    // Draw labels
+    
     for (int i = 0; i < labels.length; i++) {
       final x = size.width * i / (labels.length - 1);
       textPainter.text = TextSpan(

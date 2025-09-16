@@ -116,12 +116,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 32),
                 TextFormField(
                   controller: _emailController,
-                  // >>> ПОЧАТОК ЗМІН <<<
                   style: const TextStyle(
-                      color: Colors.black), // Текст вводу чорний
+                      color: Colors.black),
                   decoration: _inputDecoration(
                       'Електронна пошта', Icons.email_outlined),
-                  // >>> КІНЕЦЬ ЗМІН <<<
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) => (value == null || !value.contains('@'))
                       ? 'Введіть коректний email'
@@ -131,11 +129,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 TextFormField(
                   controller: _passwordController,
                   obscureText: true,
-                  // >>> ПОЧАТОК ЗМІН <<<
                   style: const TextStyle(
-                      color: Colors.black), // Текст вводу чорний
+                      color: Colors.black),
                   decoration: _inputDecoration('Пароль', Icons.lock_outline),
-                  // >>> КІНЕЦЬ ЗМІН <<<
                   validator: (value) => (value == null || value.isEmpty)
                       ? 'Введіть пароль'
                       : null,
@@ -181,11 +177,9 @@ class _LoginScreenState extends State<LoginScreen> {
   InputDecoration _inputDecoration(String label, IconData icon) {
     return InputDecoration(
       labelText: label,
-      // >>> ПОЧАТОК ЗМІН (колір тексту підказки) <<<
       labelStyle: const TextStyle(color: AppColors.lightTextSecondary),
       hintStyle:
           TextStyle(color: AppColors.lightTextSecondary.withOpacity(0.7)),
-      // >>> КІНЕЦЬ ЗМІН <<<
       prefixIcon: Icon(icon, color: AppColors.lightTextSecondary),
       filled: true,
       fillColor: AppColors.lightBackground.withOpacity(0.8),

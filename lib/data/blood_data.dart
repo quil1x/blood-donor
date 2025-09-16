@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:donor_dashboard/data/models/blood_type_model.dart';
 
-// Дані про групи крові з рідкістю
+
 final List<BloodTypeModel> bloodTypes = [
   BloodTypeModel(
     type: 'O+',
@@ -61,7 +61,7 @@ final List<BloodTypeModel> bloodTypes = [
   ),
 ];
 
-// Статистика по центрах донорства
+
 final List<BloodCenterStats> bloodCentersStats = [
   BloodCenterStats(
     name: 'Київський центр крові',
@@ -100,7 +100,7 @@ final List<BloodCenterStats> bloodCentersStats = [
   ),
 ];
 
-// Трекер бонусів
+
 final List<BonusTracker> bonusTrackers = [
   BonusTracker(
     title: 'Перша донація',

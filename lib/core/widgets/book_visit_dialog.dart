@@ -107,7 +107,7 @@ class _BookVisitDialogState extends State<BookVisitDialog> {
         _isLoading = true;
       });
 
-      // Симуляція запиту
+      
       await Future.delayed(const Duration(seconds: 2));
 
       if (mounted) {
@@ -186,7 +186,7 @@ class _BookVisitDialogState extends State<BookVisitDialog> {
               ),
               const SizedBox(height: 24),
               
-              // Поля для введення
+              
               TextFormField(
                 controller: _nameController,
                 style: const TextStyle(color: AppColors.lightTextPrimary),
@@ -269,7 +269,7 @@ class _BookVisitDialogState extends State<BookVisitDialog> {
               ),
               const SizedBox(height: 16),
               
-              // Група крові
+              
               DropdownButtonFormField<String>(
                 value: _selectedBloodType,
                 style: const TextStyle(color: AppColors.lightTextPrimary),
@@ -306,7 +306,7 @@ class _BookVisitDialogState extends State<BookVisitDialog> {
               ),
               const SizedBox(height: 24),
               
-              // Дата та час
+              
               Row(
                 children: [
                   Expanded(
@@ -370,7 +370,7 @@ class _BookVisitDialogState extends State<BookVisitDialog> {
               ),
               const SizedBox(height: 32),
               
-              // Кнопки
+              
               Row(
                 children: [
                   Expanded(

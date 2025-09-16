@@ -1,5 +1,3 @@
-// lib/features/quests/screens/quests_screen.dart
-
 import 'package:donor_dashboard/core/theme/app_colors.dart';
 import 'package:donor_dashboard/core/widgets/challenge_card.dart';
 import 'package:donor_dashboard/data/models/quest_model.dart';
@@ -39,12 +37,9 @@ class _QuestsScreenState extends State<QuestsScreen> {
       currentUser.totalPoints += quest.rewardPoints;
       
       debugPrint("📊 Нові дані: балів: ${currentUser.totalPoints}, квестів: ${currentUser.completedQuests.length}");
-      
-      // Чекаємо на оновлення профілю
       final success = await _authService.updateUserProfile(currentUser);
       if (success) {
         widget.onUpdate();
-        // Оновлюємо стан екрану, щоб квест зник зі списку
         setState(() {});
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -105,7 +100,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
                 child: ListView(
                   padding: const EdgeInsets.all(16.0),
                   children: [
-                    // Активні квести
+                    
                     if (activeQuests.isNotEmpty) ...[
                       const Text(
                         'Активні квести',
@@ -130,7 +125,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
                       }),
                     ],
                     
-                    // Виконані квести
+                    
                     if (completedQuests.isNotEmpty) ...[
                       const SizedBox(height: 24),
                       const Text(
@@ -153,7 +148,7 @@ class _QuestsScreenState extends State<QuestsScreen> {
                       }),
                     ],
                     
-                    // Повідомлення якщо немає квестів
+                    
                     if (activeQuests.isEmpty && completedQuests.isEmpty)
                       const Center(
                         child: Text(

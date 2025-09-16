@@ -20,7 +20,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    // Синхронізуємо з поточним користувачем
     _dashboardService.syncWithCurrentUser();
   }
 
@@ -32,7 +31,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return ListenableBuilder(
       listenable: Listenable.merge([_dashboardService, _authService]),
       builder: (context, child) {
-        // Синхронізуємо дані при кожному оновленні
         _dashboardService.syncWithCurrentUser();
         final displayUser = _dashboardService.getCurrentData();
         
@@ -43,17 +41,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Header
                 _buildHeader(displayUser, isMobile),
                 SizedBox(height: isMobile ? 20 : 32),
 
-                // Stats Cards - Responsive Grid
                 _buildStatsGrid(displayUser, isMobile, isTablet),
                 SizedBox(height: isMobile ? 20 : 32),
 
-                // Main Content
                 if (isMobile) ...[
-                  // Mobile: Stack vertically
                   _buildBloodTypesSection(isMobile),
                   SizedBox(height: 16),
                   _buildCentersSection(isMobile),
@@ -62,7 +56,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   SizedBox(height: 16),
                   _buildChartsSection(displayUser, isMobile),
                 ] else ...[
-                  // Desktop: Side by side
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -88,7 +81,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ],
                 SizedBox(height: isMobile ? 20 : 32),
 
-                // Info Section
                 _buildInfoSection(displayUser, isMobile),
               ],
             ),
@@ -648,7 +640,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
       );
     }
 
-    // Генеруємо дані для полосок
     final data = _generateSimpleData(totalDonations);
     
     return Column(
@@ -691,7 +682,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(6),
-                    color: AppColors.blueAccent, // Завжди синій колір
+                    color: AppColors.blueAccent,
                   ),
                 ),
               ),
@@ -864,7 +855,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 }
 
-// Simple data classes
 class BarData {
   final String label;
   final double value;

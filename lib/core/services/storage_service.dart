@@ -11,7 +11,7 @@ class StorageService {
   static const String _userKey = 'current_user';
   static const String _isLoggedInKey = 'is_logged_in';
 
-  // Збереження користувача
+  
   Future<void> saveUser(AppUser user) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -24,7 +24,7 @@ class StorageService {
     }
   }
 
-  // Завантаження користувача
+  
   Future<AppUser?> loadUser() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -45,7 +45,7 @@ class StorageService {
     }
   }
 
-  // Перевірка, чи залогінений користувач
+  
   Future<bool> isLoggedIn() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -56,7 +56,7 @@ class StorageService {
     }
   }
 
-  // Видалення даних користувача
+  
   Future<void> clearUser() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -68,7 +68,7 @@ class StorageService {
     }
   }
 
-  // Оновлення даних користувача
+  
   Future<void> updateUser(AppUser user) async {
     await saveUser(user);
   }

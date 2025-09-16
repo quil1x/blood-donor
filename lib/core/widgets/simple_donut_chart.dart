@@ -122,7 +122,7 @@ class DonutChartPainter extends CustomPainter {
     final radius = size.width / 2 - 10;
     final innerRadius = radius * 0.6;
 
-    double startAngle = -90 * (3.14159 / 180); // Start from top
+    double startAngle = -90 * (3.14159 / 180); 
 
     for (final item in data) {
       final sweepAngle = (item.value / total) * 2 * 3.14159;
@@ -139,7 +139,7 @@ class DonutChartPainter extends CustomPainter {
         paint,
       );
 
-      // Draw inner circle to create donut effect
+      
       final innerPaint = Paint()
         ..color = Colors.white
         ..style = PaintingStyle.fill;
